@@ -165,7 +165,7 @@ public class Sorter {
         }
     }
 
-
+    @Deprecated
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void countingSort(int[] a, int low, int high) {
         Map<Integer,Integer> map = new TreeMap<>(new Comparator<>() {
@@ -188,10 +188,8 @@ public class Sorter {
     /**
      * 猴子排序
      */
-    @Building
-    public static void lessBogoSort() {
-
-    }
+    @Deprecated
+    public abstract static void lessBogoSort() {}
 
     public static void bogoSort(int[] a, int low, int high) {
         while (!sorted(a)) {
