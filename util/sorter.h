@@ -1,9 +1,3 @@
-
-
-
-#include "原生排序算法.h"
-
-
 /**
  * @author 昭裳卿@QQ:956995844
  */
@@ -105,15 +99,3 @@ template <typename T> void dualSelectionSort(T a[], size_t low, size_t high) {
         swap(a[max_i], a[high--]);
     }
 }
-
-第一个参数：要排序的数组
-第二个参数：从哪个索引开始
-第三个参数：从哪个索引结束
-
-bubbleSort(,,)        冒泡排序
-combSort(,,)          梳排序
-shellSort(,,)         希尔排序
-insertionSort(,,)     插入排序
-selectionSort(,,)     选择排序
-dualSelectionSort(,,) 双向选择排序
-
