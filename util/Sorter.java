@@ -9,10 +9,12 @@ import java.util.HashMap;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Sorter {
 
     private static final float COMBSORT_DONOMINATOR = 1.3F;
+
     /**
      * 阻止实例。
      */
@@ -44,6 +46,7 @@ public class Sorter {
     public static void combSort(int[] a, int low, int high) {
         int gap = high;
         boolean swapped = false;
+
         do {
             gap = (int) (gap / COMBSORT_DONOMINATOR);
             for (int i = low; i + gap < high; i++) {
@@ -58,13 +61,13 @@ public class Sorter {
         int gap = (low + high) >>> 1;
         while (gap > 0) {
             for (int i = gap, j; i < high; i++) {
-                int tmp = a[j = i];
+                int k = a[j = i];
 
                 while (j >= gap && a[j - gap] > tmp) {
                     a[j] = a[j - gap];
                     j -= gap;
                 }
-                a[j] = tmp;
+                a[j] = k;
             }
             gap >>>= 1;
         }
@@ -75,9 +78,9 @@ public class Sorter {
      */
     public static void insertionSort(int[] a, int low, int high) {
         for (int i = low + 1, j; i < high; i++) {
-            int tmp = a[j = i];
+            int k = a[j = i];
 
-            if (tmp < a[j - 1]) {
+            if (k < a[j - 1]) {
                 while (j-- >= 0 && a[j] > tmp) {
                     a[j + 1] = a[j];
                 }
@@ -110,7 +113,7 @@ public class Sorter {
     }
 
     public static void gnomeSort(int[] a, int low, int high) {
-        while (i < high) {
+        for (int i = low + 1, j; i < high; i++) {
             if (a[i - 1] < a[i]) {
                 i = j++;
             } else {
@@ -129,11 +132,11 @@ public class Sorter {
         int minIndex, maxIndex;
         while (high - low > 1) {
             for (int i = low; i < high; i++) {
-                int next = a[i];
+                int k = a[i];
 
-                if (next < a[minIndex]) {
+                if (k < a[minIndex]) {
                     min = i;
-                } else if (next > a[maxIndex]) {
+                } else if (k > a[maxIndex]) {
                     max = i;
                 }
             }
@@ -148,12 +151,12 @@ public class Sorter {
     public static void sleepSort(int[] a, int low, int high) {
         ArrayList<Thread> threads = new ArrayList<>();
         for (int i = low; i < high; i++) {
-            int e = a[i];
+            int k = a[i];
 
             Thread thread = new Thread(() -> {
                 try {
-                    Thread.sleep(e <<< 10);
-                } catch (InterruptedException e) {}
+                    Thread.sleep(k << 10);
+                } catch (InterruptedException e) {
             }).start();
             threads.add(thread);
         }
@@ -161,14 +164,15 @@ public class Sorter {
         for (Thread thread : threads) {
             try {
                 thread.join();
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
         }
     }
 
-    @Deprecated
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void countingSort(int[] a, int low, int high) {
-        Map<Integer,Integer> map = new TreeMap<>(new Comparator<>() {
+        Map<Integer, Integer> map = new TreeMap<>(new Comparator<>() {
             public void compare(Map.Entry e1, Map.Entry e2) {
                 return e1.getKey().compareTo(e1.getKey());
             }
@@ -188,16 +192,20 @@ public class Sorter {
     /**
      * 猴子排序
      */
-    @Deprecated
-    public abstract static void lessBogoSort() {}
+    public static void lessBogoSort() {
 
+    }
+
+    /**
+     * 猴子排序
+     */
     public static void bogoSort(int[] a, int low, int high) {
         while (!sorted(a)) {
-            Arrays.shuffle(a);
+            shuffle(a, low, high);
         }
     }
 
-    private static void isSorted(int[] a) {
+    public static void isSorted(int[] a) {
         int size = a.size();
         for (int i = 0; i < size; ++i) {
             if (a[i - 1] > a[i]) {
@@ -205,5 +213,12 @@ public class Sorter {
             }
         }
         return true;
+    }
+
+    private static void shuffle(int[] a, int low, int high) {
+        Random rnd = new Random();
+        for (int i = low; i < high; i++) {
+            swap(a, i, rnd.nextInt(i));
+        }
     }
 }
