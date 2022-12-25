@@ -19,9 +19,9 @@ template<typename T> inline void swap(T& a, T& b) noexcept {
  * 冒泡排序
  */
 template<typename T> void bubbleSort(T a[], size_t low, size_t high) {
-    bool swapped = false;
+    bool swapped;
     do {
-        for (int i = low + 1; i < high--; ++i) {
+        for (size_t i = low + 1; i < high--; ++i) {
             if (swapped = (a[i - 1] > a[i])) {
                 swap(a[i - 1], a[i]);
             }
@@ -30,7 +30,7 @@ template<typename T> void bubbleSort(T a[], size_t low, size_t high) {
 }
 
 template<typename T> void gnomeSort(T a[], size_t low, size_t high) {
-    for (int i = low + 1, j; i < high; i++) {
+    for (size_t i = low + 1, j; i < high; i++) {
         if (a[i - 1] < a[i]) {
             i = j++;
         } else {
@@ -47,11 +47,12 @@ template<typename T> void gnomeSort(T a[], size_t low, size_t high) {
  */
 template<typename T> void combSort(T a[], size_t low, size_t high) {
     int gap = high;
-    bool swapped = false;
+    bool swapped;
 
     do {
         gap = (int) (gap / COMBSORT_DONOMINATOR);
-        for (int i = low; i + gap < high; i++) {
+
+        for (size_t i = low; i + gap < high; i++) {
             if (swapped = (a[i] > a[i + gap])) {
                 swap(a[i], a[i + gap]);
             }
@@ -63,9 +64,9 @@ template<typename T> void combSort(T a[], size_t low, size_t high) {
  * 希尔排序
  */
 template<typename T> void shellSort(T a[], size_t low, size_t high) {
-    int gap = (low + high) >> 1;
+    size_t gap = (low + high) >> 1;
     while (gap > 0) {
-        for (int i = gap, j; i < high; i++) {
+        for (size_t i = gap, j; i < high; i++) {
             T k = a[j = i];
 
             while (i >= gap && a[j - gap] > k) {
@@ -82,9 +83,9 @@ template<typename T> void shellSort(T a[], size_t low, size_t high) {
  * 双向选择排序
  */
 template<typename T> void dualSelectionSort(T a[], size_t low, size_t high) {
-    int min_i, max_i;
+    size_t min_i, max_i;
     while (high - low > 1) {
-        for (int i = low; i < high; i++) {
+        for (size_t i = low; i < high; i++) {
             T k = a[i];
 
             if (k > a[max_i]) {
