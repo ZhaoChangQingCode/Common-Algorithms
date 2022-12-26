@@ -3,8 +3,9 @@
  */
 
 #define COMBSORT_DONOMINATOR 1.3F
-
-using size_t = unsigned int;
+#ifndef size_t
+#define size_t unsigned int;
+#endif
 
 /**
  * 交换两个地址的值
