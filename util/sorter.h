@@ -4,7 +4,7 @@
 
 #define COMBSORT_DONOMINATOR 1.3F
 #ifndef size_t
-#define size_t unsigned int
+#   define size_t unsigned int
 #endif
 
 /**
