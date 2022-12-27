@@ -51,11 +51,11 @@ template<typename T> void gnomeSort(T* a, size_t low, size_t high) {
  * 梳排序
  */
 template<typename T> void combSort(T* a, size_t low, size_t high) {
-    int gap = high;
+    size_t gap = high;
     bool swapped;
 
     do {
-        gap = (int) (gap / COMBSORT_DONOMINATOR);
+        gap = (size_t) (gap / COMBSORT_DONOMINATOR);
         for (size_t i = low; i + gap < high; i++) {
             if (swapped = (a[i] > a[i + gap])) {
                 swap(a[i], a[i + gap]);
