@@ -114,7 +114,7 @@ template<typename T> void insertionSort(T* a, size_t low, size_t high) {
             while (j-- >= 0 && k < a[j]) {
                 a[j + 1] = a[j]; // {@code j} 已经自减
             }
-            a[j + 1] = tmp;
+            a[j + 1] = k;
         }
     }
 }
