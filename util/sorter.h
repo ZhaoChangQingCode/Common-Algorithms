@@ -126,8 +126,8 @@ template<typename T> void insertionSort(T* a, size_t low, size_t high) {
 template<typename T> void quicksort(T* a, size_t low, size_t high) {
     if (low < high) {
         size_t pivot_i = [](a, low, high) -> {
-            size_t pivot_i = high;
-            T pivot = a[left];
+            size_t pivot_i = low;
+            T pivot = a[pivot_i];
 
             while (low < high) {
                 while (a[high--] >= pivot && low < high);
