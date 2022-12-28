@@ -132,6 +132,7 @@ template<typename T> void quicksort(T* a, size_t low, size_t high) {
             while (low < high) {
                 while (a[high--] >= pivot && low < high);
                 while (a[low++] <= pivot && low < high);
+
                 swap(a[low], a[high]);
             }
             swap(a[pivot_i], a[left]);
