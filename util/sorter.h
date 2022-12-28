@@ -118,3 +118,25 @@ template<typename T> void insertionSort(T* a, size_t low, size_t high) {
         }
     }
 }
+
+/**
+ * 快速排序（旧版）
+ */
+template<typename T> void legacyQuicksort(T* a, size_t low, size_t high) {
+    if (low < high) {
+        size_t pivot_t = [](a, low, high) -> {
+            size_t pivot_i = high;
+            T pivot = a[left];
+
+            while (low < high) {
+                while (a[high--] >= pivot && low < high);
+                while (a[low++] <= pivot && low < high);
+                swap(a[low], a[high]);
+            }
+            swap(a[pivot_i], a[left]);
+            return left;
+        }
+        quicksort(a, low, pivot_i - 1);
+        quicksort(a, pivot_i + 1, high);
+    }
+}
