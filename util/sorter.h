@@ -56,6 +56,7 @@ template<typename T> void combSort(T* a, size_t low, size_t high) {
 
     do {
         gap = (size_t) (gap / COMBSORT_DONOMINATOR);
+
         for (size_t i = low; i + gap < high; i++) {
             if (swapped = (a[i] > a[i + gap])) {
                 swap(a[i], a[i + gap]);
@@ -120,9 +121,9 @@ template<typename T> void insertionSort(T* a, size_t low, size_t high) {
 }
 
 /**
- * 快速排序（旧版）
+ * 快速排序
  */
-template<typename T> void legacyQuicksort(T* a, size_t low, size_t high) {
+template<typename T> void quicksort(T* a, size_t low, size_t high) {
     if (low < high) {
         size_t pivot_t = [](a, low, high) -> {
             size_t pivot_i = high;
