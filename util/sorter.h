@@ -136,7 +136,7 @@ template<typename T> void quicksort(T* a, size_t low, size_t high) {
                 swap(a[low], a[high]);
             }
             swap(a[pivot_i], a[low]);
-            return left;
+            return low;
         }
         quicksort(a, low, pivot_i - 1);
         quicksort(a, pivot_i + 1, high);
