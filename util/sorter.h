@@ -35,7 +35,7 @@ template<typename T> void bubbleSort(T* a, size_t low, size_t high) {
  */
 template<typename T> void gnomeSort(T* a, size_t low, size_t high) {
     for (size_t i = low + 1, j; i < high; i++) {
-        if (j != 0) {
+        if (j > 0) {
             if (a[i - 1] <= a[i]) {
                 j = ++i;
             } else {
