@@ -31,6 +31,43 @@ template<typename T> void bubbleSort(T* a, size_t low, size_t high) {
 }
 
 /**
+ * 鸡尾酒排序；双向冒泡
+ */
+template<typename T> void cocktailShakerSort(T& a, size_t low, size_t high) {
+    while (low < high) {
+        for (size_t i = high; i > low; i--) {
+            if (a[i - 1] > a[i]) {
+                swap(a[i - 1], a[i]);
+            }
+        }
+        for (size_t i = low; i < high; i++) {
+            if (a[i] > a[i + 1]) {
+                swap(a[i], a[i + 1]);
+            }
+        }
+    }
+}
+
+/**
+ * 奇偶排序
+ */
+template<typename T> void oddEvenSort(T* a, size_t low, size_t high) {
+    bool sorted;
+    do {
+        for (size_t i = 1; i < high; i += 2) {
+            if (sorted = (a[i] > a[i + 1])) {
+                swap(a[i], a[i + 1]);
+            }
+        }
+        for (size_t i = 0; i < high; i += 2) {
+            if (sorted = (a[i] > a[i + 1])) {
+                swap(a[i], a[i + 1]);
+            }
+        }
+    } while (sorted);
+}
+
+/**
  * 地精排序
  */
 template<typename T> void gnomeSort(T* a, size_t low, size_t high) {
