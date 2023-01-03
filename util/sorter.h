@@ -121,7 +121,9 @@ template<typename T> void shellSort(T& a, size_t low = 0, size_t high = size(a) 
     }
 }
 
-/
+/**
+ * 昭裳卿排序
+ */
 template<typename T> void johnySort(T& a, size_t low = 0, size_t high = size(0) - 1) {
     size_t gap = (low + high) >> 1;
     if (gap > 0) {
