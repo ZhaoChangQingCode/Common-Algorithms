@@ -15,7 +15,7 @@ template<typename T> inline void swap(T& a, T& b) noexcept {
 }
 
 template<typename T> inline size_t size(T& a) noexcept {
-    return sizeof(a) / sizeof(a[0]);
+    return sizeof(*a) / sizeof(*a[0]);
 }
 
 /**
