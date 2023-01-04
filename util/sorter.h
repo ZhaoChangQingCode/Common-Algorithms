@@ -184,7 +184,7 @@ template<typename T> void countingSort(T& a, size_t low, size_t high) {
     T* count = new T[high - low] {0};
     for (size_t i = low; i < high; ++count[a[i++]]);
 
-    for (size_t i = low, j; i < high; i++) {
+    for (size_t i = low; i < high; i++) {
         while (count[i++] == 0);
 
         size_t& value = i;
