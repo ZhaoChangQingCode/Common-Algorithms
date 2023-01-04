@@ -120,7 +120,7 @@ template<typename T> void shellSort(T (&a)[], size_t low, size_t high) {
 /**
  * 昭裳卿排序
  */
-template<typename T> void johnySort(T (&a)[], size_t low, size_t high = size(0) - 1) {
+template<typename T> void johnySort(T (&a)[], size_t low, size_t high) {
     size_t gap = (low + high) >> 1;
     if (gap > 0) {
         for (size_t i = gap, j; i < high; i++) {
@@ -232,7 +232,6 @@ template<typename T> void pinInsertionSort(T (&a)[], size_t low, size_t high) {
  */
 void countingSort(size_t (&a)[], size_t low, size_t high) {
     size_t* count = new size_t[high - low] {0};
-
     for (size_t i = low; i < high; ++count[a[i++]]);
 
     for (size_t i = low; i < high; i++) {
@@ -274,8 +273,84 @@ template<typename T> void quicksort(T (&a)[], size_t low, size_t high) {
 }
 
 /**
- * 双轴快速排序
+ * TODO: 双轴快速排序
  */
+template<typename T> void dualPivotQuicksort(T (&a)[], size_t low, size_t high) {}
+
+/**
+ * TODO: 归并排序
+ */
+template<typename T> void mergeSort(T (&a)[], size_t low, size_t high) {}
+
+/**
+ * TODO: 二分法插入排序
+ */
+template<typename T> void binaryInsertionSort(T (&a)[], size_t low, size_t high) {}
+
+/**
+ * TODO: 二分法归并排序
+ */
+template<typename T> void binaryMergeSort(T (&a)[], size_t low, size_t high) {}
+
+/**
+ * TODO: 堆排序
+ */
+template<typename T> void heapSort(T (&a)[], size_t low, size_t high) {}
+
+/**
+ * TODO: 弱堆排序
+ */
+template<typename T> void weakHeapSort(T (&a)[], size_t low, size_t high) {}
+
+/**
+ * TODO: 三元堆排序
+ */
+template<typename T> void ternaryHeapSort(T (a&)[], size_t low, size_t high) {}
+
+/**
+ * TODO: 桶排序
+ */
+template<typename T> void bucketSort(T (&a)[], size_t low, size_t high) {}
+
+/**
+ * TODO: 闪排序，桶排序的优化版。
+ */
+template<typename T> void flashSort(T (&a)[], size_t low, size_t high) {}
+
+/**
+ * TODO: 基数排序（LSD, Least Significant Digital）
+ */
+namespace lsd {
+    template<typename T> void radixSort(T (&a)[], size_t low, size_t high) {}
+}
+
+/**
+ * TODO: 基数排序（MSD, Most Significant Digital）
+ */
+namespace msd {
+    template<typename T> void radixSort(T (&a)[], size_t low, size_t high) {}
+}
+
+
+
+
+
+
+size_t digitAt(float x, int place) {
+    return place > 0 ? (size_t)(x >> place - 1)) % 10 : ((size_t)(abs(x) << -place)) % 10;
+}
+
+inline size_t digits(int x) noexcept {
+    size_t digits = 1;
+    while (0 < x = (size_t)(x / pow(10, digit++)));
+    return digits;
+}
+
+inline size_t digitAt(int x, int place) noexcept {
+    return (int)(x / pow(10, place - 1)) % 10;
+}
+
+
 template<typename T> void dualPivotQuicksort(T (&a)[], size_t low, size_t high = size(0) - 1) {
     if (low < high) {
         size_t left = low, right = high;
@@ -297,90 +372,3 @@ template<typename T> void dualPivotQuicksort(T (&a)[], size_t low, size_t high =
         dualPivotQuicksort(a, right + 1, high);
     }
 }
-
-/**
- * TODO: 归并排序
- */
-template<typename T> void mergeSort(T (&a)[], size_t low, size_t high) {}
-
-/**
- * TODO: 二分法插入排序
- */
-template<typename T> void binaryInsertionSort(T (&a)[], size_t low, size_t high) {
-    for (size_t i = low, j; i < high; i++) {
-        T k = a[j = i];
-
-        while (low < high) {
-            size_t mid = (low + high) >> 1;
-
-            if (a[mid] < k) {
-                low = mid + 1;
-            } else if (a[mid] > k) {
-                high = mid - 1;
-            }
-        }
-        while (j-- >= low) {
-            swap(a[j], a[j + 1]);
-        }
-    }
-}
-
-/**
- * TODO: 二分法归并排序
- */
-template<typename T> void binaryMergeSort(T (&a)[], size_t low, size_t high) {}
-
-/**
- * TODO: 堆排序
- */
-template<typename T> void heapSort() {}
-
-/**
- * TODO: 弱堆排序
- */
-template<typename T> void weakHeapSort() {}
-
-/**
- * TODO: 三元堆排序
- */
-template<typename T> void ternaryHeapSort() {}
-
-/**
- * TODO: 桶排序
- */
-template<typename T> void bucketSort(T (&a)[], size_t low, size_t high) {}
-
-/**
- * TODO: 闪排序，桶排序的优化版。
- */
-template<typename T> void flashSort() {}
-
-inline size_t digits(int x) noexcept {
-    size_t digits = 1;
-    while (0 < x = (size_t)(x / pow(10, digit++)));
-    return digits;
-}
-
-inline size_t digitAt(int x, int place) noexcept {
-    return (int)(x / pow(10, place - 1)) % 10;
-}
-
-
-/**
- * TODO: 基数排序（LSD, Least Significant Digital）
- */
-namespace lsd {
-    template<typename T> void radixSort(T (&a)[], size_t low, size_t high) {}
-}
-
-/**
- * TODO: 基数排序（MSD, Most Significant Digital）
- */
-namespace msd {
-    template<typename T> void radixSort(T (&a)[], size_t low, size_t high) {}
-}
-
-size_t digitAt(float x, int place) {
-    return place > 0 ? (size_t)(x >> place - 1)) % 10 : ((size_t)(abs(x) << -place)) % 10;
-}
-
