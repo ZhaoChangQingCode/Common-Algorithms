@@ -181,7 +181,9 @@ template<typename T> void insertionSort(T& a, size_t low, size_t high) {
  * 计数排序
  */
 template<typename T> void countingSort(T& a, size_t low, size_t high) {
+    static_assert((int)a[0] == a[0], "Integer type supported only!");
     T* count = new T[high - low] {0};
+
     for (size_t i = low; i < high; ++count[a[i++]]);
 
     for (size_t i = low; i < high; i++) {
