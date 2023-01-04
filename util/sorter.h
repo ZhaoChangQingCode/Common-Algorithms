@@ -1,6 +1,7 @@
 /**
  * @author 昭裳卿@QQ:956995844
  */
+#include <typeinfo.h>
 
 #define COMBSORT_DONOMINATOR 1.3F
 #define size_t unsigned int
@@ -15,13 +16,13 @@ template<typename T> inline void swap(T& a, T& b) noexcept {
 }
 
 template<typename T> inline size_t size(T& a) noexcept {
-    return sizeof(*a) / sizeof(*a[0]);
+    return sizeof(a) / sizeof(a[0]);
 }
 
 /**
  * @brief 冒泡排序
  */
-template<typename T> void bubbleSort(T& a, size_t low = 0, size_t high = size(a) - 1) {
+template<typename T> void bubbleSort(T& a, size_t low, size_t high) {
     bool swapped;
     do {
         for (size_t i = low + 1; i < high--; ++i) {
@@ -35,7 +36,7 @@ template<typename T> void bubbleSort(T& a, size_t low = 0, size_t high = size(a)
 /**
  * 鸡尾酒排序；双向冒泡
  */
-template<typename T> void cocktailShakerSort(T& a, size_t low = 0, size_t high = size(a) - 1) {
+template<typename T> void cocktailShakerSort(T& a, size_t low, size_t high) {
     while (low < high) {
         for (size_t i = high; i > low; i--) {
             if (a[i - 1] > a[i]) {
@@ -53,7 +54,7 @@ template<typename T> void cocktailShakerSort(T& a, size_t low = 0, size_t high =
 /**
  * 奇偶排序
  */
-template<typename T> void oddEvenSort(T& a, size_t low = 0, size_t high = size(a) - 1) {
+template<typename T> void oddEvenSort(T& a, size_t low, size_t high) {
     bool sorted;
     do {
         for (size_t i = 1; i < high; i += 2) {
@@ -72,7 +73,7 @@ template<typename T> void oddEvenSort(T& a, size_t low = 0, size_t high = size(a
 /**
  * 地精排序，冒泡排序的优化版，减少了无效迭代。
  */
-template<typename T> void gnomeSort(T& a, size_t low = 0, size_t high = size(a) - 1) {
+template<typename T> void gnomeSort(T& a, size_t low, size_t high) {
     for (size_t i = low + 1, j; i < high; i++) {
         if (j > 0) {
             if (a[i - 1] <= a[i]) {
@@ -89,7 +90,7 @@ template<typename T> void gnomeSort(T& a, size_t low = 0, size_t high = size(a) 
 /**
  * 梳排序
  */
-template<typename T> void combSort(T& a, size_t low = 0, size_t high = size(a) - 1) {
+template<typename T> void combSort(T& a, size_t low, size_t high) {
     size_t gap = high;
     bool swapped;
     do {
@@ -105,7 +106,7 @@ template<typename T> void combSort(T& a, size_t low = 0, size_t high = size(a) -
 /**
  * 希尔排序
  */
-template<typename T> void shellSort(T& a, size_t low = 0, size_t high = size(a) - 1) {
+template<typename T> void shellSort(T& a, size_t low, size_t high) {
     size_t gap = (low + high) >> 1;
     while (gap > 0) {
         for (size_t i = gap, j; i < high; i++) {
@@ -124,7 +125,7 @@ template<typename T> void shellSort(T& a, size_t low = 0, size_t high = size(a) 
 /**
  * 昭裳卿排序
  */
-template<typename T> void johnySort(T& a, size_t low = 0, size_t high = size(0) - 1) {
+template<typename T> void johnySort(T& a, size_t low, size_t high = size(0) - 1) {
     size_t gap = (low + high) >> 1;
     if (gap > 0) {
         for (size_t i = gap, j; i < high; i++) {
@@ -143,7 +144,7 @@ template<typename T> void johnySort(T& a, size_t low = 0, size_t high = size(0) 
 /**
  * 双向选择排序
  */
-template<typename T> void doubleSelectionSort(T& a, size_t low = 0, size_t high = size(a) - 1) {
+template<typename T> void doubleSelectionSort(T& a, size_t low, size_t high) {
     size_t min_i, max_i;
     while (high - low > 1) {
         for (size_t i = low; i < high; i++) {
@@ -163,7 +164,7 @@ template<typename T> void doubleSelectionSort(T& a, size_t low = 0, size_t high 
 /**
  * 插入排序
  */
-template<typename T> void insertionSort(T& a, size_t low = 0, size_t high = size(a) - 1) {
+template<typename T> void insertionSort(T& a, size_t low, size_t high) {
     for (size_t i = low + 1, j; i < high; i++) {
         T& k = a[j = i];
 
@@ -179,18 +180,21 @@ template<typename T> void insertionSort(T& a, size_t low = 0, size_t high = size
 /**
  * 计数排序
  */
-template<typename T> void countingSort(T& a, size_t low = 0, size_t high = size(a) - 1) {
-    T* tmp = new T[high - low] {0};
-    for (size_t i = low; i < high; i++) {
-        tmp[a[i]]++;
-    }
+template<typename T> void countingSort(T& a, size_t low, size_t high) {
+    T* count = new T[high - low] {0};
+    for (size_t i = low; i < high; ++count[a[i++]]);
+
     for (size_t i = low, j; i < high; i++) {
-        size_t count = a[j = i];
-        for (size_t t = 0; t < count; t++) {
-            a[i] = j;
-        }
+        while (count[i++] == 0);
+
+        size_t value = i;
+        T& c = a[value];
+
+        do {
+            a[low++] = value;
+        } while (--c > 0);
     }
-    delete[] tmp;
+    delete[] count;
 }
 
 /**
@@ -198,7 +202,7 @@ template<typename T> void countingSort(T& a, size_t low = 0, size_t high = size(
  * 左指针向右迭代至比基准数大的位置，然后交换左右，直至两指针相遇，交换基准数和
  * 相遇点。
  */
-template<typename T> void quicksort(T& a, size_t low = 0, size_t high = size(a) - 1) {
+template<typename T> void quicksort(T& a, size_t low, size_t high) {
     if (low < high) {
         size_t pivot_i = [](a, low, high) -> {
             size_t pivot_i = low;
@@ -221,7 +225,7 @@ template<typename T> void quicksort(T& a, size_t low = 0, size_t high = size(a) 
 /**
  * 双轴快速排序
  */
-template<typename T> void dualPivotQuicksort(T& a, size_t low = 0, size_t high = size(0) - 1) {
+template<typename T> void dualPivotQuicksort(T& a, size_t low, size_t high = size(0) - 1) {
     if (low < high) {
         size_t left = low, right = high;
         T pivot1 = a[left], pivot2 = a[right];
@@ -324,3 +328,8 @@ namespace lsd {
 namespace msd {
     template<typename T> void radixSort(T& a, size_t low, size_t high) {}
 }
+
+size_t digitAt(float x, int place) {
+    return place > 0 ? (size_t)(x >> place - 1)) % 10 : ((size_t)(abs(x) << -place)) % 10;
+}
+
