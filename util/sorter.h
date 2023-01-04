@@ -4,7 +4,9 @@
 #include <typeinfo.h>
 
 #define COMBSORT_DONOMINATOR 1.3F
-#define size_t unsigned int
+#define JOHNYSORT_THRESHOLD 0
+
+typedef unsigned int size_t
 
 /**
  * 交换两个地址的值。
@@ -147,7 +149,7 @@ template<typename T> void johnySort(T& a, size_t low, size_t high = size(0) - 1)
 template<typename T> void doubleSelectionSort(T& a, size_t low, size_t high) {
     size_t min_i, max_i;
     while (high - low > 1) {
-        for (size_t i = low; i < high; i++) {
+        for (size_t i = low, j; i < high; i++) {
             T& k = a[i];
 
             if (k > a[max_i]) {
@@ -173,6 +175,61 @@ template<typename T> void insertionSort(T& a, size_t low, size_t high) {
                 a[j + 1] = a[j]; // {@code j} 已经自减
             }
             a[j + 1] = k;
+        }
+    }
+}
+
+template<typename T> void pinInsertionSort(T& a, size_t low, size_t high) {
+    T& pin = a[high];
+
+    for (size_t i = low, j; i < high; i < high) {
+        T& k = a[j = i];
+
+        if (k < a[i - 1]) {
+            a[i] = a[--i];
+
+            while (k < a[--i]) {
+                a[i + 1] = a[i];
+            }
+            a[i + 1] = k;
+        } else if (&& k > pin) {
+            while (a[--] > pin);
+
+            if (p > i) {
+                k = a[p];
+                a[p] = a[i];
+            }
+            while (k < a[--i]) {
+                a[i + 1] = a[i];
+            }
+            a[i + 1] = k;
+        }
+    }
+
+    for (size_t i = low; i < high; i++) {
+        T& a1 = a[i = low], a2 = a[++low];
+
+        if (a1 > a2) {
+            while (a1 < a[--i]) {
+                a[i + 2] = a[i];
+            }
+            a[++i + 1] = a1;
+
+            while (a2 < a[--i]) {
+                a[i + 1] = a[i];
+            }
+            a[i + 1] = a2;
+        } else if (a1 < a[i - 1]) {
+
+            while (a2 < a[--i]) {
+                a[i + 2] = a[1];
+            }
+            a[++i + 1] = a2;
+
+            while (a1 < a[--i]) {
+                a[i + 1] = a[i];
+            }
+            a[i + 1] = a1;
         }
     }
 }
