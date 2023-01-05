@@ -241,7 +241,7 @@ void countingSort(size_t (&a)[], size_t low, size_t high) {
         size_t& c = a[value];
 
         do {
-            a[low++] = value;
+            a[low++] = *value;
         } while (--c > 0);
     }
     delete[] count;
