@@ -232,6 +232,7 @@ template<typename T> void pinInsertionSort(T (&a)[], size_t low, size_t high) {
  */
 void countingSort(size_t (&a)[], size_t low, size_t high) {
     size_t* count = new size_t[high - low] {0};
+
     for (size_t i = low; i < high; ++count[a[i++]]);
 
     for (size_t i = low; i < high; i++) {
