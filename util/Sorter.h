@@ -7,30 +7,6 @@
 
 typedef unsigned int size_t;
 
-enum DataDistribution {
-    ALMOST_ORDERED,
-    ALMOST_UNORDERED,
-    NUMEROUS_REPETITION
-};
-
-void sort(char* (&a)[], size_t low, size_t high) {
-    if (high - low < COUNTING_SORT_THRESHOLD) {
-        dualPivotQuicksort();
-    } else {
-        countingSort(a, low, high);
-    }
-}
-
-template<typename T> void sort(T* (&a)[], size_t low, size_t high, Case case) {
-    switch (case) {
-        case Case::ALMOST_ORDERED: binaryInsertionSort(a, low, high);
-        case NUMEROUS_REPETITION:  countingSort(a, low, high);
-        default: {
-
-        }
-    }
-}
-
 /**
  * 交换两个地址的值。
  */
@@ -362,185 +338,80 @@ void countingSort(size_T* (&a)[], size_t low, size_t high) {
  */
 template<typename T> void quicksort(T* (&a)[], size_t low, size_t high) {
     if (low < high) {
-        size_t pivot_i = [](a, low, high) -> {
-            size_t pivot_i = low;
-            T& pivot = a[pivot_i];
+        T& pivot = a[high];
+        size_t left = low, right = high;
 
-            do {
-                while (a[high--] >= pivot && low < high); // require {@code a[high]} < pivot
-                while (a[low++] <= pivot && low < high);  // require {@code a[low]} > pivot
+        do {
+            while (a[--right] >= pivot);
+            while (a[++left] <= pivot);
 
-                swap(a[low], a[high]);
-            } while (low < high);
-            swap(a[pivot_i], a[low]);
-            return low;
-        }
-        quicksort(a, low, pivot_i - 1);
-        quicksort(a, pivot_i + 1, high);
+            swap(a[right], a[left]);
+        } while (low < high);
+        swap(a[left], a[low]);
+
+        quicksort(a, low, left);
+        quicksort(a, left, right);
     }
 }
 
 
-
-
-/**
- * TODO: 双轴快速排序
- */
-template<typename T> void dualPivotQuicksort(T* (&a)[], size_t low, size_t high) {}
-
-/**
- * TODO: 归并排序
- */
-template<typename T> void mergeSort(T* (&a)[], size_t low, size_t high) {
+template<typename T> void legacyQuicksort(T* (&a)[], size_t low, size_t high) {
     if (low < high) {
-        mergeSort(a, low, mid);
-        mergeSort(a, mid, high);
-        merge(a, low, mid, high);
-        for (; low < mid;)
-    }
-}
+        T& pivot = a[high];
+        size_t left = low, right = high;
 
-/**
- * TODO: 二分法归并排序
- */
-template<typename T> void binaryMergeSort(T* (&a)[], size_t low, size_t high) {}
+        for (size_t i = right - 1; i > left; i--) {
+            T& k = a[i];
 
-/**
- * TODO: 堆排序
- */
-template<typename T> void heapSort(T* (&a)[], size_t low, size_t high) {}
+            if (k < pivot) {
+                while (a[++left] <= pivot);
 
-/**
- * TODO: 弱堆排序
- */
-template<typename T> void weakHeapSort(T* (&a)[], size_t low, size_t high) {}
-
-/**
- * TODO: 三元堆排序
- */
-template<typename T> void ternaryHeapSort(T (a&)[], size_t low, size_t high) {}
-
-/**
- * TODO: 桶排序
- */
-template<typename T> void bucketSort(T* (&a)[], size_t low, size_t high) {}
-
-/**
- * TODO: 闪排序，桶排序的优化版。
- */
-template<typename T> void flashSort(T* (&a)[], size_t low, size_t high) {}
-
-/**
- * TODO: 基数排序（LSD, Least Significant Digital）
- */
-namespace lsd {
-    template<typename T> void radixSort(T* (&a)[], size_t low, size_t high) {}
-}
-
-/**
- * TODO: 基数排序（MSD, Most Significant Digital）
- */
-namespace msd {
-    template<typename T> void radixSort(T* (&a)[], size_t low, size_t high) {}
-}
-
-size_t digitAt(float x, int place) {
-    return place > 0 ? (size_t)(x >> place - 1)) % 10 : ((size_t)(abs(x) << -place)) % 10;
-}
-
-inline size_t digits(int x) noexcept {
-    size_t digits = 1;
-    while (0 < x = (size_t)(x / pow(10, digit++)));
-    return digits;
-}
-
-inline size_t digitAt(int x, int place) noexcept {
-    return (int)(x / pow(10, place - 1)) % 10;
-}
-
-
-
-
-
-template<typename T> bool _tryMergeRuns(T* (&a)[], size_t low, size_t high) {
-    for (size_t i = low + 1; i < high;) {
-        if (a[i - 1] < a[i]) {
-            while (++i < high && a[i - 1] <= a[i]);
-
-        } else if (a[i - 1] > a[i]) {
-
-            while (++i < high && a[i - 1] >= a[i]);
-
-            for (size_t p = high - 1, q = i; i < j;) {
-                swap(a[i++], a[j--]);
-            }
-        } else {
-            for (T& k = a[i]; ++i < high && k == a[i];);
-
-            if (i < high) {
-                continue;
-            }
-        }
-
-        if (run == NULL)
-    }
-}
-
-template<typename T> void _merge(T* (&a)[], size_t low, size_t high) {
-    size_t left = low, right = high, k = low;
-    T* tmp = new T[];
-
-    for (size_t k = low; low <= high;) {
-        if (a[left] > a[right]) {
-            tmp[k++] = a[j++];
-        } else {
-            tmp[k++] = a[i++];
-        }
-    }
-    for (; left < right; tmp[k] = a[right++]);
-    for (; left < right; a[i++] = tmp[i])
-}
-
-template<typename T> void mergeSort(T* (&a)[], size_t low, size_t high) {
-    if (low < high) {
-        size_t mid = (low + high) >> 1;
-
-    }
-}
-
-// WARNING:
-template<typename T> void dualPivotQuicksort(T* (&a)[], size_t low, size_t high) {
-    size_t left = low;
-    size_t right = high;
-    T& pivot1 = a[];
-    T& pivot2 = a[];
-
-    while (a[++left] < pivot1);
-    while (a[--right] > pivot2);
-
-    for (size_t i = --right; --i > right;) {
-        T& k = a[i];
-
-        if (k < pivot1) {
-            while (left < i) {
-                if (a[++left] >= pivot1) {
-                    if (a[left] > pivot2) {
-                        a[i] = a[--right];
-                        a[right] = a[left];
-                    } else {
-                        a[i] = a[left];
-                    }
-                    a[left] = k;
-                    break;
+                if (a[left] > pivot) {
+                    swap(a[--right], a[left]);
                 }
+            } else {
+                a[--right] = k;
             }
-        } else if (k > pivot2) {
-            a[i] = a[--right];
-            a[right] = k;
         }
-        a[low] = a[left];
-        a[left] = pivot1;
-        a[high] = a[right];
-        a[right] = pivot2;
+        quicksort(a, low, left);
+        quicksort(a, left high);
     }
 }
+
+template<typename T> void dualPivotQuicksort(T* (&a)[], size_t low, size_t high) {
+    if (low <= high) {
+        size_t left = low, right = high;
+        T &pivot1 = a[left], &pivot2 = a[right];
+
+        while (a[++lower] < pivot1);
+        while (a[--upper] > pivot2);
+
+        for (size_t i = high - 1; i >= upper;) {
+            T& k = a[i];
+
+            if (k <= pivot1) { // 当前比左轴小
+                while (left < k) { // 越界终止
+                    if (a[++left] >= pivot1) {
+                        if (a[left] > pivot2) { //
+                            a[i] = a[--right];
+                            a[right] = a[left];
+                        } else {
+                            a[i] = a[left];
+                        }
+                        a[left] = k;
+                        break;
+                    }
+                }
+            } else if (k >= pivot2) {
+                swap(a[upper], a[i--]);
+            }
+        }
+        a[low] = a[lower]; a[lower] = pivot1; // 左轴与 a[lower - 1] 交换
+        a[end] = a[upper]; a[upper] = pivot2; // 右轴与 a[upper] 交换
+        dualPivotQuicksort(a, low, left);
+        dualPivotQuicksort(a, left, right);
+        dualPivotQuicksort(a, right, high);
+    }
+}
+
+
