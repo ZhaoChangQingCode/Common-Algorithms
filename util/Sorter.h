@@ -2,8 +2,8 @@
  * @author 昭裳卿@QQ:956995844
  */
 #define COMB_SORT_SHRINK 1.3F
-#define MAX_MIXED_INSERTION_SORT_SIZE 65
-#define COUNTING_SORT_THRESHOLD 64, 1750
+// #define MAX_MIXED_INSERTION_SORT_SIZE 65
+// #define COUNTING_SORT_THRESHOLD 64, 1750
 
 typedef unsigned int size_t;
 
