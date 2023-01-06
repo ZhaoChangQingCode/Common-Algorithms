@@ -1,12 +1,35 @@
 /**
  * @author 昭裳卿@QQ:956995844
  */
-#include <typeinfo.h>
+#define COMB_SORT_SHRINK 1.3F
+#define MAX_MIXED_INSERTION_SORT_SIZE 65
+#define COUNTING_SORT_THRESHOLD 64, 1750
 
-#define COMBSORT_DONOMINATOR 1.3F
-#define JOHNYSORT_THRESHOLD 0
+typedef unsigned int size_t;
 
-typedef unsigned int size_t
+enum DataDistribution {
+    ALMOST_ORDERED,
+    ALMOST_UNORDERED,
+    NUMEROUS_REPETITION
+};
+
+void sort(char* (&a)[], size_t low, size_t high) {
+    if (high - low < COUNTING_SORT_THRESHOLD) {
+        dualPivotQuicksort();
+    } else {
+        countingSort(a, low, high);
+    }
+}
+
+template<typename T> void sort(T* (&a)[], size_t low, size_t high, Case case) {
+    switch (case) {
+        case Case::ALMOST_ORDERED: binaryInsertionSort(a, low, high);
+        case NUMEROUS_REPETITION:  countingSort(a, low, high);
+        default: {
+
+        }
+    }
+}
 
 /**
  * 交换两个地址的值。
@@ -20,7 +43,7 @@ template<typename T> inline void swap(T& a, T& b) noexcept {
 /**
  * @brief 冒泡排序
  */
-template<typename T> void bubbleSort(T (&a)[], size_t low, size_t high) {
+template<typename T> void bubbleSort(T* (&a)[], size_t low, size_t high) {
     bool swapped;
     do {
         for (size_t i = low + 1; i < high--; ++i) {
@@ -34,7 +57,7 @@ template<typename T> void bubbleSort(T (&a)[], size_t low, size_t high) {
 /**
  * 鸡尾酒排序；双向冒泡
  */
-template<typename T> void cocktailShakerSort(T (&a)[], size_t low, size_t high) {
+template<typename T> void cocktailShakerSort(T* (&a)[], size_t low, size_t high) {
     bool swapped;
     do {
         for (size_t i = high; i > low; i--) {
@@ -53,7 +76,7 @@ template<typename T> void cocktailShakerSort(T (&a)[], size_t low, size_t high) 
 /**
  * 奇偶排序
  */
-template<typename T> void oddEvenSort(T (&a)[], size_t low, size_t high) {
+template<typename T> void oddEvenSort(T* (&a)[], size_t low, size_t high) {
     bool sorted;
     do {
         for (size_t i = 1; i < high; i += 2) {
@@ -72,7 +95,7 @@ template<typename T> void oddEvenSort(T (&a)[], size_t low, size_t high) {
 /**
  * 地精排序，冒泡排序的优化版，减少了无效迭代。
  */
-template<typename T> void gnomeSort(T (&a)[], size_t low, size_t high) {
+template<typename T> void gnomeSort(T* (&a)[], size_t low, size_t high) {
     for (size_t i = low + 1, j; i < high; i++) {
         if (a[i - 1] <= a[i] || j < 0) {
             j = ++i;
@@ -85,11 +108,11 @@ template<typename T> void gnomeSort(T (&a)[], size_t low, size_t high) {
 /**
  * 梳排序
  */
-template<typename T> void combSort(T (&a)[], size_t low, size_t high) {
+template<typename T> void combSort(T* (&a)[], size_t low, size_t high) {
     size_t gap = high;
     bool swapped;
     do {
-        gap = (size_t) (gap / COMBSORT_DONOMINATOR);
+        gap = (size_t)((float)gap / COMB_SORT_SHRINK);
         for (size_t i = low; i + gap < high; i++) {
             if (swapped = (a[i] > a[i + gap])) {
                 swap(a[i], a[i + gap]);
@@ -100,8 +123,10 @@ template<typename T> void combSort(T (&a)[], size_t low, size_t high) {
 
 /**
  * 希尔排序
+ *
+ * 结合了插入排序和梳排序思想的排序算法。由于插入排序对完全无序的数据支持度很低
  */
-template<typename T> void shellSort(T (&a)[], size_t low, size_t high) {
+template<typename T> void shellSort(T* (&a)[], size_t low, size_t high) {
     size_t gap = (low + high) >> 1;
     while (gap > 0) {
         for (size_t i = gap, j; i < high; i++) {
@@ -118,9 +143,11 @@ template<typename T> void shellSort(T (&a)[], size_t low, size_t high) {
 }
 
 /**
- * 昭裳卿排序
+ * WARNING: 昭裳卿排序
+ *
+ * 
  */
-template<typename T> void johnySort(T (&a)[], size_t low, size_t high) {
+template<typename T> void johnySort(T* (&a)[], size_t low, size_t high) {
     size_t gap = (low + high) >> 1;
     if (gap > 0) {
         for (size_t i = gap, j; i < high; i++) {
@@ -134,12 +161,37 @@ template<typename T> void johnySort(T (&a)[], size_t low, size_t high) {
         }
         gap >>= 1;
     }
+    for (size_t i = low + 1; i < high; i++) {
+        if (a[i - 1] <= a[i]) {
+            while (++i < high && a[i - 1] <= a[i]);
+        } else {
+            while (++i < high && a[i - 1] >= a[i]); // 迭代至降序序列的最后一位
+
+            for (size_t j = i, mid = (low + j) >> 1; mid < j;) { // 反转降序
+                swap(a[low++], a[j--]);
+            }
+        }
+    }
+}
+
+void selectionSort(T* (&a)[], size_t low, size_t high) {
+    size_t min_i = low;
+    for (size_t i = low, j; i < high; j = i++) {
+        while (j++ < high) {
+            T& k = a[j];
+
+            if (k < a[min_i]) {
+                min_i = j;
+            }
+        }
+        swap(a[i], a[min_i]);
+    }
 }
 
 /**
  * 双向选择排序
  */
-template<typename T> void doubleSelectionSort(T (&a)[], size_t low, size_t high) {
+template<typename T> void doubleSelectionSort(T* (&a)[], size_t low, size_t high) {
     size_t min_i, max_i;
     while (high - low > 1) {
         for (size_t i = low, j; i < high; i++) {
@@ -158,8 +210,10 @@ template<typename T> void doubleSelectionSort(T (&a)[], size_t low, size_t high)
 
 /**
  * 插入排序
+ *
+ * 仅对部分无序的数据支持度高，而且无效比较次数太多，已过时，请转用二分法插入。
  */
-template<typename T> void insertionSort(T (&a)[], size_t low, size_t high) {
+template<typename T> void insertionSort(T* (&a)[], size_t low, size_t high) {
     for (size_t i = low + 1, j; i < high; i++) {
         T& k = a[j = i];
 
@@ -172,7 +226,32 @@ template<typename T> void insertionSort(T (&a)[], size_t low, size_t high) {
     }
 }
 
-template<typename T> void pinInsertionSort(T (&a)[], size_t low, size_t high) {
+/**
+ * 二分法插入排序
+ *
+ * 插入排序的改良版，用二分法查找减少比较次数。
+ */
+template<typename T> void binaryInsertionSort(T* (&a)[], size_t low, size_t high) {
+    size_t left = low, right = high;
+    for (size_t i = low; i < high; i++) {
+        T& k = a[i];
+
+        while (left <= right) {
+            size_t mid = (left + right) >> 1;
+            T& mid_val = a[mid];
+
+            if (mid_val > k) {
+                high = mid - 1;
+            } else if (mid_val < k) {
+                low = mid + 1;
+            }
+        }
+        for (size_t j = i - 1; j-- > low; a[j + 1] = a[j]);
+        a[left] = k;
+    }
+}
+
+template<typename T> void pinInsertionSort(T* (&a)[], size_t low, size_t high) {
     T& pin = a[high];
 
     for (size_t i = low, j; i < high; i < high) {
@@ -227,12 +306,40 @@ template<typename T> void pinInsertionSort(T (&a)[], size_t low, size_t high) {
     }
 }
 
+template<typename T> inline _pushDown(* (&a)[], T value, size_t low, size_t high) {
+    size_t p = low;
+    for (int i; i < high; a[p] = a[p = i]) {
+        i = (p << 1) - low + 2;
+
+        if (k = high || a[i] < a[i - 1]) {
+            --k;
+        }
+        if (a[i] <= value) {
+            break;
+        }
+    }
+    a[p] = value;
+}
+
+/**
+ * 堆排序
+ */
+template<typename T> void heap(T* (&a)[], size_t low, size_t high) {
+    for (int i = (low + high) >> 1; i > low;) {
+        _pushDown(a, --i, a[i], low, high);
+    }
+    while (--high > low) {
+        T& max = a[low];
+        _pushDown(a, a[high], low, high);
+        a[high] = max;
+    }
+}
+
 /**
  * 计数排序
  */
-void countingSort(size_t (&a)[], size_t low, size_t high) {
+void countingSort(size_T* (&a)[], size_t low, size_t high) {
     size_t* count = new size_t[high - low] {0};
-
     for (size_t i = low; i < high; ++count[a[i++]]);
 
     for (size_t i = low; i < high; i++) {
@@ -242,7 +349,7 @@ void countingSort(size_t (&a)[], size_t low, size_t high) {
         size_t& c = a[value];
 
         do {
-            a[low++] = *value;
+            a[low++] = value;
         } while (--c > 0);
     }
     delete[] count;
@@ -253,7 +360,7 @@ void countingSort(size_t (&a)[], size_t low, size_t high) {
  * 左指针向右迭代至比基准数大的位置，然后交换左右，直至两指针相遇，交换基准数和
  * 相遇点。
  */
-template<typename T> void quicksort(T (&a)[], size_t low, size_t high) {
+template<typename T> void quicksort(T* (&a)[], size_t low, size_t high) {
     if (low < high) {
         size_t pivot_i = [](a, low, high) -> {
             size_t pivot_i = low;
@@ -273,35 +380,40 @@ template<typename T> void quicksort(T (&a)[], size_t low, size_t high) {
     }
 }
 
+
+
+
 /**
  * TODO: 双轴快速排序
  */
-template<typename T> void dualPivotQuicksort(T (&a)[], size_t low, size_t high) {}
+template<typename T> void dualPivotQuicksort(T* (&a)[], size_t low, size_t high) {}
 
 /**
  * TODO: 归并排序
  */
-template<typename T> void mergeSort(T (&a)[], size_t low, size_t high) {}
-
-/**
- * TODO: 二分法插入排序
- */
-template<typename T> void binaryInsertionSort(T (&a)[], size_t low, size_t high) {}
+template<typename T> void mergeSort(T* (&a)[], size_t low, size_t high) {
+    if (low < high) {
+        mergeSort(a, low, mid);
+        mergeSort(a, mid, high);
+        merge(a, low, mid, high);
+        for (; low < mid;)
+    }
+}
 
 /**
  * TODO: 二分法归并排序
  */
-template<typename T> void binaryMergeSort(T (&a)[], size_t low, size_t high) {}
+template<typename T> void binaryMergeSort(T* (&a)[], size_t low, size_t high) {}
 
 /**
  * TODO: 堆排序
  */
-template<typename T> void heapSort(T (&a)[], size_t low, size_t high) {}
+template<typename T> void heapSort(T* (&a)[], size_t low, size_t high) {}
 
 /**
  * TODO: 弱堆排序
  */
-template<typename T> void weakHeapSort(T (&a)[], size_t low, size_t high) {}
+template<typename T> void weakHeapSort(T* (&a)[], size_t low, size_t high) {}
 
 /**
  * TODO: 三元堆排序
@@ -311,31 +423,26 @@ template<typename T> void ternaryHeapSort(T (a&)[], size_t low, size_t high) {}
 /**
  * TODO: 桶排序
  */
-template<typename T> void bucketSort(T (&a)[], size_t low, size_t high) {}
+template<typename T> void bucketSort(T* (&a)[], size_t low, size_t high) {}
 
 /**
  * TODO: 闪排序，桶排序的优化版。
  */
-template<typename T> void flashSort(T (&a)[], size_t low, size_t high) {}
+template<typename T> void flashSort(T* (&a)[], size_t low, size_t high) {}
 
 /**
  * TODO: 基数排序（LSD, Least Significant Digital）
  */
 namespace lsd {
-    template<typename T> void radixSort(T (&a)[], size_t low, size_t high) {}
+    template<typename T> void radixSort(T* (&a)[], size_t low, size_t high) {}
 }
 
 /**
  * TODO: 基数排序（MSD, Most Significant Digital）
  */
 namespace msd {
-    template<typename T> void radixSort(T (&a)[], size_t low, size_t high) {}
+    template<typename T> void radixSort(T* (&a)[], size_t low, size_t high) {}
 }
-
-
-
-
-
 
 size_t digitAt(float x, int place) {
     return place > 0 ? (size_t)(x >> place - 1)) % 10 : ((size_t)(abs(x) << -place)) % 10;
@@ -352,24 +459,88 @@ inline size_t digitAt(int x, int place) noexcept {
 }
 
 
-template<typename T> void dualPivotQuicksort(T (&a)[], size_t low, size_t high = size(0) - 1) {
-    if (low < high) {
-        size_t left = low, right = high;
-        T pivot1 = a[left], pivot2 = a[right];
 
-        for (size_t i = low + 1; i < high; i++) {
-            T& k = a[i];
 
-            if (k < pivot1) {
-                swap(a[i], a[++left]);
-            } else if (k > pivot2) {
-                swap(a[i], a[--right]);
+
+template<typename T> bool _tryMergeRuns(T* (&a)[], size_t low, size_t high) {
+    for (size_t i = low + 1; i < high;) {
+        if (a[i - 1] < a[i]) {
+            while (++i < high && a[i - 1] <= a[i]);
+
+        } else if (a[i - 1] > a[i]) {
+
+            while (++i < high && a[i - 1] >= a[i]);
+
+            for (size_t p = high - 1, q = i; i < j;) {
+                swap(a[i++], a[j--]);
+            }
+        } else {
+            for (T& k = a[i]; ++i < high && k == a[i];);
+
+            if (i < high) {
+                continue;
             }
         }
-        swap(a[low], a[left]);
-        swap(a[high], a[right]);
-        dualPivotQuicksort(a, low, left - 1);
-        dualPivotQuicksort(a, left + 1, right - 1);
-        dualPivotQuicksort(a, right + 1, high);
+
+        if (run == NULL)
+    }
+}
+
+template<typename T> void _merge(T* (&a)[], size_t low, size_t high) {
+    size_t left = low, right = high, k = low;
+    T* tmp = new T[];
+
+    for (size_t k = low; low <= high;) {
+        if (a[left] > a[right]) {
+            tmp[k++] = a[j++];
+        } else {
+            tmp[k++] = a[i++];
+        }
+    }
+    for (; left < right; tmp[k] = a[right++]);
+    for (; left < right; a[i++] = tmp[i])
+}
+
+template<typename T> void mergeSort(T* (&a)[], size_t low, size_t high) {
+    if (low < high) {
+        size_t mid = (low + high) >> 1;
+
+    }
+}
+
+// WARNING:
+template<typename T> void dualPivotQuicksort(T* (&a)[], size_t low, size_t high) {
+    size_t left = low;
+    size_t right = high;
+    T& pivot1 = a[];
+    T& pivot2 = a[];
+
+    while (a[++left] < pivot1);
+    while (a[--right] > pivot2);
+
+    for (size_t i = --right; --i > right;) {
+        T& k = a[i];
+
+        if (k < pivot1) {
+            while (left < i) {
+                if (a[++left] >= pivot1) {
+                    if (a[left] > pivot2) {
+                        a[i] = a[--right];
+                        a[right] = a[left];
+                    } else {
+                        a[i] = a[left];
+                    }
+                    a[left] = k;
+                    break;
+                }
+            }
+        } else if (k > pivot2) {
+            a[i] = a[--right];
+            a[right] = k;
+        }
+        a[low] = a[left];
+        a[left] = pivot1;
+        a[high] = a[right];
+        a[right] = pivot2;
     }
 }
