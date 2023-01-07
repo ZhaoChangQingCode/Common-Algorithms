@@ -5,7 +5,6 @@
 #define MAX_MIXED_INSERTION_SORT_SIZE 65
 #define COUNTING_SORT_THRESHOLD 64, 1750
 
-typedef unsigned int size_t;
 
 /**
  * 交换两个地址的值。
@@ -106,7 +105,7 @@ template<typename T> void shellSort(T* a, size_t low, size_t high) {
     size_t gap = (low + high) >> 1;
     while (gap > 0) {
         for (size_t i = gap, j; i < high; i++) {
-            T& k = a[j = i];
+            T k = a[j = i];
 
             while (i >= gap && a[j - gap] > k) {
                 a[j] = a[j - gap];
@@ -127,7 +126,7 @@ template<typename T> void johnySort(T* a, size_t low, size_t high) {
     size_t gap = (low + high) >> 1;
     if (gap > 0) {
         for (size_t i = gap, j; i < high; i++) {
-            T& k = a[j = i];
+            T k = a[j = i];
 
             while (i >= gap && a[j - gap] > k) {
                 a[j] = a[j - gap];
@@ -150,11 +149,11 @@ template<typename T> void johnySort(T* a, size_t low, size_t high) {
     }
 }
 
-void selectionSort(T* a, size_t low, size_t high) {
+template<typename T> void selectionSort(T* a, size_t low, size_t high) {
     size_t min_i = low;
-    for (size_t i = low, j; i < high; j = i++) {
+    for (size_t i = low, j; i < high; j = i) {
         while (j++ < high) {
-            T& k = a[j];
+            T k = a[j];
 
             if (k < a[min_i]) {
                 min_i = j;
@@ -168,10 +167,10 @@ void selectionSort(T* a, size_t low, size_t high) {
  * 双向选择排序
  */
 template<typename T> void doubleSelectionSort(T* a, size_t low, size_t high) {
-    size_t min_i, max_i;
+    size_t min_i = low, max_i = high;
     while (high - low > 1) {
         for (size_t i = low, j; i < high; i++) {
-            T& k = a[i];
+            T k = a[i];
 
             if (k > a[max_i]) {
                 max_i = i;
@@ -191,10 +190,10 @@ template<typename T> void doubleSelectionSort(T* a, size_t low, size_t high) {
  */
 template<typename T> void insertionSort(T* a, size_t low, size_t high) {
     for (size_t i = low + 1, j; i < high; i++) {
-        T& k = a[j = i];
+        T k = a[j = i];
 
         if (k < a[j - 1]) {
-            while (j-- >= 0 && k < a[j]) {
+            while (--j >= 0 && k < a[j]) {
                 a[j + 1] = a[j]; // {@code j} 已经自减
             }
             a[j + 1] = k;
@@ -210,11 +209,11 @@ template<typename T> void insertionSort(T* a, size_t low, size_t high) {
 template<typename T> void binaryInsertionSort(T* a, size_t low, size_t high) {
     size_t left = low, right = high;
     for (size_t i = low; i < high; i++) {
-        T& k = a[i];
+        T k = a[i];
 
         while (left <= right) { // binary search for insertion position
             size_t mid = (left + right) >> 1;
-            T& mid_val = a[mid];
+            T mid_val = a[mid];
 
             if (mid_val > k) {
                 right = mid - 1;
@@ -228,10 +227,10 @@ template<typename T> void binaryInsertionSort(T* a, size_t low, size_t high) {
 }
 
 template<typename T> void pinInsertionSort(T* a, size_t low, size_t high) {
-    T& pin = a[high];
+    T pin = a[high];
 
     for (size_t i = low, j; i < high; i < high) {
-        T& k = a[j = i];
+        T k = a[j = i];
 
         if (k < a[i - 1]) {
             a[i] = a[--i];
@@ -255,7 +254,7 @@ template<typename T> void pinInsertionSort(T* a, size_t low, size_t high) {
     }
 
     for (size_t i = low; i < high; i++) {
-        T& a1 = a[i = low], a2 = a[++low];
+        T a1 = a[i = low], a2 = a[++low];
 
         if (a1 > a2) {
             while (a1 < a[--i]) {
@@ -314,15 +313,15 @@ template<typename T> void heap(T* a, size_t low, size_t high) {
 /**
  * 计数排序
  */
-void countingSort(size_T* a, size_t low, size_t high) {
-    size_t* count = new size_t[high - low] {0};
+void countingSort(size_t* a, size_t low, size_t high) {
+    int count[high - low + 1] {0};
     for (size_t i = low; i < high; ++count[a[i++]]);
 
     for (size_t i = low; i < high; i++) {
         while (count[i++] == 0);
 
-        size_t& value = i;
-        size_t& c = a[value];
+        size_t value = i;
+        size_t c = a[value];
 
         do {
             a[low++] = value;
@@ -338,7 +337,7 @@ void countingSort(size_T* a, size_t low, size_t high) {
  */
 template<typename T> void quicksort(T* a, size_t low, size_t high) {
     if (low < high) {
-        T& pivot = a[high];
+        T pivot = a[high];
         size_t left = low, right = high;
 
         while (left < right) {
@@ -357,11 +356,11 @@ template<typename T> void quicksort(T* a, size_t low, size_t high) {
 
 template<typename T> void legacyQuicksort(T* a, size_t low, size_t high) {
     if (low < high) {
-        T& pivot = a[high];
+        T pivot = a[high];
         size_t left = low, right = high;
 
         for (size_t i = right - 1; i > left; i--) {
-            T& k = a[i];
+            T k = a[i];
 
             if (k < pivot) {
                 while (a[++left] <= pivot);
@@ -379,13 +378,13 @@ template<typename T> void legacyQuicksort(T* a, size_t low, size_t high) {
 template<typename T> void dualPivotQuicksort(T* a, size_t low, size_t high) {
     if (low <= high) {
         size_t left = low, right = high;
-        T &pivot1 = a[left], &pivot2 = a[right];
+        T pivot1 = a[left], pivot2 = a[right];
 
         while (a[++lower] < pivot1);
         while (a[--upper] > pivot2);
 
         for (size_t i = high - 1; i >= upper;) {
-            T& k = a[i];
+            T k = a[i];
 
             if (k <= pivot1) { // 当前比左轴小
                 while (left < k) { // 越界终止
