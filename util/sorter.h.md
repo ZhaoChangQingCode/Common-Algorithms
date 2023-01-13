@@ -4,9 +4,9 @@
 >| size_type | unsigned int |
 
 ## 如何使用
-每个函数的参数皆为 `a: T*` 要排序的数组、`low: size_type` 排序范围左端点、`high: size_type` 排序范围右端点。
+每个函数的参数依次皆为 `T* a` 要排序的数组、`size_type low` 排序范围左端点、`size_type high` 排序范围右端点。
 ```C
-size_t high = sizeof(a) / sizeof(a[0]);
+size_t high = sizeof(a) / sizeof(a[0]); // 计算数组长度
 bubbleSort(a, 0, --high);
 ```
 
