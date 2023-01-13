@@ -35,14 +35,28 @@ template<typename T, size_t S> size_t size(T (&a)[S]) {
 
 > ## 冒泡排序 ##
 > 时间复杂度最佳 O(n)，最差 O(n<sup>2</sup>)，平均 O(n<sup>2</sup>)；空间复杂度 O(1)
+> 
 > ## 鸡尾酒排序（双向冒泡） ##
+> 冒泡排序的优化分支，
+> 
 > ## 奇偶排序 ##
+> 冒泡排序的优化分支
+> 
 > ## 地精排序 ##
+> 冒泡排序的优化分支
+> 
 > ## 梳排序 ##
+> 冒泡排序的优化分支
+> 
 > ## 希尔排序 ##
-> 时间复杂度最佳、最差 O(n·log<sup>2</sup>n)，平均 O(n·log<sub>2</sub>n)
+> 时间复杂度最佳、最差 O(n·log<sup>2</sup>n)，平均 O(n·log<sub>2</sub>n)。
+> 希尔排序是插入排序的优化分支，其由唐纳德·希尔（Donald Shell）于 1959 年所发表的论文“A high-speed sorting procedure”（一种高效的排序流程）中提出，由玛琳·梅茨纳·诺顿（Marlene Metzner Norton）首次实现。
+> 
 > ## 双向选择排序 ##
+> 
 > ## 插入排序 ##
->时间复杂度最佳 O(n)，最差 O(n<sup>2</sup>)，平均 O(n<sup>2</sup>)；空间复杂度 O(1)
+> 时间复杂度最佳 O(n)，最差 O(n<sup>2</sup>)，平均 O(n<sup>2</sup>)；空间复杂度 O(1)
+>
 > ## 计数排序 ##
+> 
 > ## 基数排序 ##
