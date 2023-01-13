@@ -9,7 +9,12 @@
 size_t high = sizeof(a) / sizeof(a[0]); // 计算数组长度
 bubbleSort(a, 0, --high);
 ```
-
+你还可以用以下方法计算数组长度
+```C
+template<typename T, size_t S> size_t size(T (&a)[S]) {
+    return S;
+}
+```
 ## 目录
 + [冒泡排序](#)
 
