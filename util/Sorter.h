@@ -11,15 +11,15 @@ typedef unsigned int size_type;
  * @brief 冒泡排序
  */
 template<typename T> void bubbleSort(T* a, size_type low, size_type high) {
-	bool swapped;
-	size_type i = low;
-	do {
-		for (size_type j = low; j + 1 <= high; j++) {
-			if (swapped = (a[j] > a[j + 1])) {
-				swap(a[j], a[j + 1]);
-			}
-		}
-	} while (++i < high || swapped);
+    bool swapped;
+    size_type i = low;
+    do {
+        for (size_type j = low; j + 1 <= high; j++) {
+            if (swapped = (a[j] > a[j + 1])) {
+                swap(a[j], a[j + 1]);
+            }
+        }
+    } while (++i < high || swapped);
 }
 /**
  * 鸡尾酒排序；双向冒泡
@@ -166,7 +166,7 @@ template<typename T> void selectionSort(T* a, int low, int high) {
  * 仅适用于无重复元素的情况 Non-repeative elements case supported only
  */
 template<typename T> void biSelectionSort(T* a, size_type low, size_type high) {
-	size_type min, max;
+    size_type min, max;
     while (low < high) {
         min = low, max = high;
         // 寻找最大、最小值
@@ -184,8 +184,8 @@ template<typename T> void biSelectionSort(T* a, size_type low, size_type high) {
     }
     // 如果长度为奇数，中间三个元素要重新排序（因为最中间的元素会被忽视）
     if ((high - low + 1) & 1 == 1) {
-		insertionSort(a, --min, ++max);
-	}
+        insertionSort(a, --min, ++max);
+    }
 }
 
 /**
