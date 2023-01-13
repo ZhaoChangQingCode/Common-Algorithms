@@ -15,44 +15,45 @@ template<typename T, size_t S> size_t size(T (&a)[S]) {
     return S;
 }
 ```
-## 目录
-+ [冒泡排序](#)
-+ [鸡尾酒排序（双向冒泡）](#)
-+ [](#)
-+ [](#)
-+ [](#)
-+ [](#)
-+ [](#)
-+ [](#)
-+ [](#)
-+ [](#)
-+ [](#)
-+ [](#)
-+ [](#)
-+ [](#)
-+ [](#)
 > ## 方法摘要
 > 
 >| 修饰符与类型 | 函数 | 描述 |
 >|:----------:|:-----:|:------:|
->| template\<typename T\> void | [bubbleSort(T* a, size_t low, size_t high)](#bubble-sort) | 冒泡排序 |
->| template\<typename T\> void | [cocktailShakerSort(T* a, size_t low, size_t high)](#) | 双向冒泡 |
->| template\<typename T\> void | [oddEvenSort(T* a, size_t low, size_t high)]() | 奇偶排序 |
->| template\<typename T\> void | [gnomeSort(T* a, size_t low, size_t high)]() | 地精排序 |
->| template\<typename T\> void | [combSort(T* a, size_t low, size_t high)]() | 梳排序 |
->| template\<typename T\> void | [shellSort(T* a, size_t low, size_t high)]() | 希尔排序 |
->| template\<typename T\> void | [biSelectionSort(T* a, size_t low, size_t high)](#bi-selection-sort) | 双向选择 |
->| template\<typename T\> void | insertionSort(T* a, size_t low, size_t high) | 插入排序 |
->| template\<typename T\> void | pinInsertionSort(T* a, size_t low, size_t high) | pin插入 |
->| template\<typename T\> void | quicksort(T* a, size_t low, size_t high) | 快速排序 |
->| template\<typename T\> void | countingSort(T* a, size_t low, size_t high) | 计数排序 |
->| template\<typename T\> void | lsd::radixSort(T* a, size_t low, size_t high) | 基数排序（LSD） |
->| template\<typename T\> void | msd::radixSort(T* a, size_t low, size_t high) | 基数排序（MSD） |
+>| template\<typename T\> void | [bubbleSort(T* a, size_type low, size_type high)](#bubble-sort) | 冒泡排序 |
+>| template\<typename T\> void | [cocktailShakerSort(T* a, size_type low, size_type high)](#) | 双向冒泡 |
+>| template\<typename T\> void | [oddEvenSort(T* a, size_type low, size_type high)]() | 奇偶排序 |
+>| template\<typename T\> void | [gnomeSort(T* a, size_type low, size_type high)]() | 地精排序 |
+>| template\<typename T\> void | [combSort(T* a, size_type low, size_type high)]() | 梳排序 |
+>| template\<typename T\> void | [shellSort(T* a, size_type low, size_type high)]() | 希尔排序 |
+>| template\<typename T\> void | [biSelectionSort(T* a, size_type low, size_type high)](#bi-selection-sort) | 双向选择 |
+>| template\<typename T\> void | insertionSort(T* a, size_type low, size_type high) | 插入排序 |
+>| template\<typename T\> void | pinInsertionSort(T* a, size_type low, size_type high) | pin插入 |
+>| template\<typename T\> void | quicksort(T* a, size_type low, size_type high) | 快速排序 |
+>| template\<typename T\> void | countingSort(T* a, size_type low, size_type high) | 计数排序 |
+>| template\<typename T\> void | lsd::radixSort(T* a, size_type low, size_type high) | 基数排序（LSD） |
+>| template\<typename T\> void | msd::radixSort(T* a, size_type low, size_type high) | 基数排序（MSD） |
 
 > ## 函数详情
->> <h2 id="bubble-sort">冒泡排序</h2>
+>> <h3 id="bubble-sort">冒泡排序</h3>
 >> 最低级的排序算法。该算法为优化版。
 >
+>> <h2>鸡尾酒排序（双向冒泡）</h2>
+
+>> <h2>奇偶排序</h2>
+
+>> <h2>地精排序</h2>
+
+>> <h3>梳排序</h3>
+>> <h2>希尔排序</h2>
+>> <h2>插入排序</h2>
+>> <h2>PIN插入排序</h2>
+>> <h2>快速排序</h2>
+>> <h2>双轴快速排序</h2>
+>> <h2>计数排序</h2>
+>> <h2>基数排序</h2>
 >> <h2 id="bi-selection-sort">双向选择排序</h2>
 >> 双向选择排序，选择排序的优化版。
 >> 每轮遍历数组，将最小、最大值分别放在数组的左右两端，将左右端标记为已排序，然后开始下一轮
+>
+>> <h2>快速排序</h2>
+>>  
