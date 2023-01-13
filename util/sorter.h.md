@@ -33,27 +33,16 @@ template<typename T, size_t S> size_t size(T (&a)[S]) {
 >| template\<typename T\> void | lsd::radixSort(T* a, size_type low, size_type high) | 基数排序（LSD） |
 >| template\<typename T\> void | msd::radixSort(T* a, size_type low, size_type high) | 基数排序（MSD） |
 
-> ## 函数详情
->> <h3 id="bubble-sort">冒泡排序</h3>
->> 最低级的排序算法。该算法为优化版。
->
->> <h2>鸡尾酒排序（双向冒泡）</h2>
-
->> <h2>奇偶排序</h2>
-
->> <h2>地精排序</h2>
-
->> <h3>梳排序</h3>
->> <h2>希尔排序</h2>
->> <h2>插入排序</h2>
->> <h2>PIN插入排序</h2>
->> <h2>快速排序</h2>
->> <h2>双轴快速排序</h2>
->> <h2>计数排序</h2>
->> <h2>基数排序</h2>
->> <h2 id="bi-selection-sort">双向选择排序</h2>
->> 双向选择排序，选择排序的优化版。
->> 每轮遍历数组，将最小、最大值分别放在数组的左右两端，将左右端标记为已排序，然后开始下一轮
->
->> <h2>快速排序</h2>
->>  
+> ## 冒泡排序 ##
+> 时间复杂度最佳 O(n)，最差 O(n<sup>2</sup>)，平均 O(n<sup>2</sup>)；空间复杂度 O(1)
+> ## 鸡尾酒排序（双向冒泡） ##
+> ## 奇偶排序 ##
+> ## 地精排序 ##
+> ## 梳排序 ##
+> ## 希尔排序 ##
+> 时间复杂度最佳、最差 O(n·log<sup>2</sup>n)，平均 O(n·log<sub>2</sub>n)
+> ## 双向选择排序 ##
+> ## 插入排序 ##
+>时间复杂度最佳 O(n)，最差 O(n<sup>2</sup>)，平均 O(n<sup>2</sup>)；空间复杂度 O(1)
+> ## 计数排序 ##
+> ## 基数排序 ##
