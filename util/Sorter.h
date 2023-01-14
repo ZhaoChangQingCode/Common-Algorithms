@@ -1,6 +1,9 @@
 /**
  * @author 昭裳卿@QQ:956995844
  */
+#include <exception>
+#include <map>
+
 #define COMB_SORT_SHRINK 1.3F
 #define MAX_MIXED_INSERTION_SORT_SIZE 65
 //#define COUNTING_SORT_THRESHOLD 64, 1750
@@ -322,79 +325,97 @@ void countingSort(int* a, size_type low, size_type high) {
  * 相遇点。
  */
 template<typename T> void quicksort(T* a, size_type low, size_type high) {
-    if (low < high) {
-        T pivot = a[high];
+    if (low <= high) {
+        T pivot = a[low];
         size_type left = low, right = high;
 
-        while (left < right) {
-            while (a[right--] >= pivot && left < right);
-            while (a[left++] <= pivot && left < right);
+        while (true) {
+            while (a[left] <= pivot && ++left < high);
+            while (a[right] >= pivot && --right > low);
 
-            swap(a[right], a[left]);
+            if (left >= right) {
+                break;
+            }
+            swap(a[left], a[right]);
         }
-        swap(a[left], a[low]);
+        a[low] = a[right];
+        a[right] = pivot;
 
-        quicksort(a, low, left);
-        quicksort(a, left, high);
+        quicksort(a, low, right - 1);
+        quicksort(a, right + 1, high);
     }
 }
 
 
-template<typename T> void legacyQuicksort(T* a, size_type low, size_type high) {
-    if (low < high) {
-        T pivot = a[high];
-        size_type left = low, right = high;
+template<typename T> void singlePivotQuicksort(T* a, size_type low, size_type high) {
+    T pivot = a[high];
+    size_type lower = low;
+    size_type upper = high;
 
-        for (size_type i = right - 1; i > left; i--) {
-            T k = a[i];
+    for (size_type i = ++upper; --i > lower; ) {
+        T k = a[i];
+
+        if (k != pivot) {
+            a[i] = pivot;
 
             if (k < pivot) {
-                while (a[++left] <= pivot);
+                while (a[++upper] < pivot);
 
-                swap(a[--right], a[left]);
-            } else {
-                a[--right] = k;
-            }
-        }
-        legacyQuicksort(a, low, left);
-        legacyQuicksort(a, left high);
-    }
-}
-
-template<typename T> void dualPivotQuicksort(T* a, size_type low, size_type high) {
-    if (low <= high) {
-        size_type left = low, right = high;
-        T pivot1 = a[left], pivot2 = a[right];
-
-        while (a[++lower] < pivot1);
-        while (a[--upper] > pivot2);
-
-        for (size_type i = high - 1; i >= upper;) {
-            T k = a[i];
-
-            if (k <= pivot1) { // 当前比左轴小
-                while (left < k) { // 越界终止
-                    if (a[++left] >= pivot1) {
-                        if (a[left] > pivot2) { //
-                            a[i] = a[--right];
-                            a[right] = a[left];
-                        } else {
-                            a[i] = a[left];
-                        }
-                        a[left] = k;
-                        break;
-                    }
+                if (a[lower] > pivot) {
+                    a[--upper] = a[lower];
                 }
-            } else if (k >= pivot2) {
-                swap(a[upper], a[i--]);
+                a[lower] = k;
+            } else {
+                a[--upper] = k;
             }
         }
-        a[low] = a[lower]; a[lower] = pivot1; // 左轴与 a[lower - 1] 交换
-        a[end] = a[upper]; a[upper] = pivot2; // 右轴与 a[upper] 交换
-        dualPivotQuicksort(a, low, left);
-        dualPivotQuicksort(a, left, right);
-        dualPivotQuicksort(a, right, high);
+    }
+    a[low] = a[lower];
+    a[lower] = pivot;
+}
+
+// unused
+template<typename T> struct Type {
+    bool isUnsigned() {
+        try {
+            T tmp = -1;
+        } catch (exception) {
+            return false;
+        }
+        return true;
+    }
+};
+
+template<typename T> void countingSort(T* a, size_type low, size_type high) {
+    size_type count[high - low + 1];
+    // 统计元素数量，数组索引->值映射对应值->数量映射
+    for (size_type i = low; i < high; ++count[a[++i]]);
+
+    for (size_type i = low; i < high; i++) {
+        while (count[++i] == 0);
+
+        size_type value = i;
+        int c = count[value];
+
+        do {
+            a[++low] = value;
+        } while (--c > 0);
     }
 }
 
+template<typename T> void mappedCountingSort(T* a, size_type low, size_type high) {
+    map<T,size_type> count;
+    // 计算数量
+    for (size_type i = low; i < high; ++count[a[++i]]);
+    // 统计数量
+    for (map<T,size_type>::iterator i = count.begin; i != count.end; i++) {
+        while (*i->second == 0);
 
+        T value = *i->first;
+        size_type c = *i->second;
+
+        do {
+            a[++low] = value;
+        } while (--c > 0);
+    }
+}
