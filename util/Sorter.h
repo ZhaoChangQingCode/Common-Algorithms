@@ -6,7 +6,6 @@
 #endif
 #include <exception>
 #include <map>
-#include <algorithm>
 
 #define COMB_SORT_SHRINK 1.3F
 #define MAX_MIXED_INSERTION_SORT_SIZE 65
