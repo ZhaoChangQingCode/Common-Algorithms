@@ -19,13 +19,15 @@ typedef unsigned int size_type;
 template<class T> void bubbleSort(T* a, size_type low, size_type high) {
     bool swapped;
     size_type i = low;
+    size_type end = high;
     do {
-        for (size_type j = low; j + 1 <= high; j++) {
+        for (size_type j = low; j + 1 <= end; j++) {
             if (swapped = (a[j] > a[j + 1])) {
                 swap(a[j], a[j + 1]);
             }
         }
-    } while (++i < high || swapped);
+        --end; // 最右边的标记为已排序
+    } while (++i < high || swapped); // 直接跳过已排序的位置
 }
 /**
  * 鸡尾酒排序；双向冒泡
@@ -33,17 +35,20 @@ template<class T> void bubbleSort(T* a, size_type low, size_type high) {
 template<class T> void cocktailShakerSort(T* a, size_type low, size_type high) {
     bool swapped;
     size_type i = low;
+    size_type start = low, end = high;
     do {
-        for (size_type j = high; j + 1 >= low; j--) {
+        for (size_type j = high; j + 1 >= start; j--) {
             if (swapped = (a[j] > a[j + 1])) {
                 swap(a[j], a[j + 1]);
             }
         }
-        for (size_type j = low; j + 1 <= high; j++) {
+        ++start; // 最左边的标记为已排序
+        for (size_type j = low; j + 1 <= end; j++) {
             if (swapped = (a[j] > a[j + 1])) {
                 swap(a[j], a[j + 1]);
             }
         }
+        --end;   // 最右边的标记为已排序
     } while (++i < high || swapped);
 }
 
