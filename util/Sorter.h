@@ -17,7 +17,7 @@ typedef unsigned int size_type;
  * @brief 冒泡排序
  */
 template<class T> void bubbleSort(T* a, size_type low, size_type high) {
-    bool swapped; sort()
+    bool swapped;
     size_type i = low;
     do {
         for (size_type j = low; j + 1 <= high; j++) {
