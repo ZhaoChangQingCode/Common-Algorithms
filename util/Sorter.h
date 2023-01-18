@@ -10,42 +10,6 @@
 typedef unsigned int size_type;
 using COMB_SORT_SHRINK = 1.3F;
 
-public static void dualPivotQuickSort(int[] arr, int left, int right) {
-    if (left < right) {
-        int pivot1 = arr[left];
-        int pivot2 = arr[right];
-        int i = left + 1;
-        int j = right - 1;
- 
-        while (i <= j) {
-            while (arr[i] < pivot1) {
-                i++;
-            }
-            while (arr[j] > pivot2) {
-                j--;
-            }
-            if (i <= j) {
-                int temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
-                i++;
-                j--;
-            }
-        }
- 
-        int temp = arr[i - 1];
-        arr[i - 1] = arr[left];
-        arr[left] = temp;
- 
-        temp = arr[j + 1];
-        arr[j + 1] = arr[right];
-        arr[right] = temp;
- 
-        dualPivotQuickSort(arr, left, j);
-        dualPivotQuickSort(arr, i, right);
-    }
-}
-
 /**
  * @brief 冒泡排序
  */
