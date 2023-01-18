@@ -13,19 +13,19 @@
 ## 函数
 | 修饰符与类型 | 返回类型 | 函数 | 描述 |
 |:----------|:-- |-----:|:------|
-| `template<class T>`| `void` | `bubbleSort(T* a, size_type low, size_type high)` | 冒泡排序 |
-| `template<class T>` |`void` | `cocktailShakerSort(T* a, size_type low, size_type high)` | 双向冒泡 |
-| `template<class T>`| `void` | `oddEvenSort(T* a, size_type low, size_type high)` | 奇偶排序 |
-| `template<class T>`| `void` | `gnomeSort(T* a, size_type low, size_type high)` | 地精排序 |
-| `template<class T>` |`void` | `combSort(T* a, size_type low, size_type high)` | 梳排序 |
-| `template<class T>` |`void` | `shellSort(T* a, size_type low, size_type high)` | 希尔排序 |
-| `template<class T>` |`void` | `biSelectionSort(T* a, size_type low, size_type high)` | 双向选择 |
-| `template<class T>` |`void` | `insertionSort(T* a, size_type low, size_type high)` | 插入排序 |
-| `template<class T>` |`void` | `pinInsertionSort(T* a, size_type low, size_type high)` | pin插入 |
-| `template<class T>` |`void` | `quicksort(T* a, size_type low, size_type high)` | 快速排序 |
-| `template<class T>` |`void` | `countingSort(T* a, size_type low, size_type high)` | 计数排序 |
-| `template<class T>` |`void` | `lsd::radixSort(T* a, size_type low, size_type high)` | 基数排序（LSD） |
-| `template<class T>` |`void` | `msd::radixSort(T* a, size_type low, size_type high)` | 基数排序（MSD） |
+| `template<class T>` | `void` | `        bubbleSort(T* a, size_type low, size_type high)` | 冒泡排序 |
+| `template<class T>` | `void` | `cocktailShakerSort(T* a, size_type low, size_type high)` | 双向冒泡 |
+| `template<class T>` | `void` | `       oddEvenSort(T* a, size_type low, size_type high)` | 奇偶排序 |
+| `template<class T>` | `void` | `         gnomeSort(T* a, size_type low, size_type high)` | 地精排序 |
+| `template<class T>` | `void` | `          combSort(T* a, size_type low, size_type high)` | 梳排序 |
+| `template<class T>` | `void` | `         shellSort(T* a, size_type low, size_type high)` | 希尔排序 |
+| `template<class T>` | `void` | `   biSelectionSort(T* a, size_type low, size_type high)` | 双向选择 |
+| `template<class T>` | `void` | `     insertionSort(T* a, size_type low, size_type high)` | 插入排序 |
+| `template<class T>` | `void` | `  pinInsertionSort(T* a, size_type low, size_type high)` | pin插入 |
+| `template<class T>` | `void` | `         quicksort(T* a, size_type low, size_type high)` | 快速排序 |
+| `template<class T>` | `void` | `      countingSort(T* a, size_type low, size_type high)` | 计数排序 |
+| `template<class T>` | `void` | `    lsd::radixSort(T* a, size_type low, size_type high)` | 基数排序（LSD） |
+| `template<class T>` | `void` | `    msd::radixSort(T* a, size_type low, size_type high)` | 基数排序（MSD） |
 
 ## 排序算法时间复杂度
 | 算法 | 最佳 | 最差 | 平均 | 注 |
