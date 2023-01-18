@@ -63,3 +63,13 @@
 > ## 归并排序（Merge Sort） ##
 > ## Tim Sort ##
 > 一种高效的排序算法，归并排序的超级优化版本。由 Tim Peter 为 Python 发明。
+
+```C
+template<class T> void swap(T& a, T& b) noexcept {
+    if (a != b) {
+        T tmp = a;
+        a = b;
+        b = tmp;
+    }
+}
+```
