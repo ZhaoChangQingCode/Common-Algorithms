@@ -12,7 +12,7 @@
 
 ## 函数
 | 修饰符与类型 | 返回类型 | 函数 | 描述 |
-|:----------|:-- |:-----|:------|
+|:----------|:-- |-----:|:------|
 | `template<class T>`| `void` | `bubbleSort(T* a, size_type low, size_type high)` | 冒泡排序 |
 | `template<class T>` |`void` | `cocktailShakerSort(T* a, size_type low, size_type high)` | 双向冒泡 |
 | `template<class T>`| `void` | `oddEvenSort(T* a, size_type low, size_type high)` | 奇偶排序 |
