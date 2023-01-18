@@ -7,19 +7,52 @@
 #include <exception>
 #include <map>
 
-#define COMB_SORT_SHRINK 1.3F
-#define MAX_MIXED_INSERTION_SORT_SIZE 65
-//#define COUNTING_SORT_THRESHOLD 64, 1750
-
 typedef unsigned int size_type;
+using COMB_SORT_SHRINK = 1.3F;
+
+public static void dualPivotQuickSort(int[] arr, int left, int right) {
+    if (left < right) {
+        int pivot1 = arr[left];
+        int pivot2 = arr[right];
+        int i = left + 1;
+        int j = right - 1;
+ 
+        while (i <= j) {
+            while (arr[i] < pivot1) {
+                i++;
+            }
+            while (arr[j] > pivot2) {
+                j--;
+            }
+            if (i <= j) {
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+                i++;
+                j--;
+            }
+        }
+ 
+        int temp = arr[i - 1];
+        arr[i - 1] = arr[left];
+        arr[left] = temp;
+ 
+        temp = arr[j + 1];
+        arr[j + 1] = arr[right];
+        arr[right] = temp;
+ 
+        dualPivotQuickSort(arr, left, j);
+        dualPivotQuickSort(arr, i, right);
+    }
+}
 
 /**
  * @brief 冒泡排序
  */
 template<class T> void bubbleSort(T* a, size_type low, size_type high) {
     bool swapped;
-    size_type i = low;
     size_type end = high;
+    size_type i = low;
     do {
         for (size_type j = low; j + 1 <= end; j++) {
             if (swapped = (a[j] > a[j + 1])) {
@@ -29,13 +62,14 @@ template<class T> void bubbleSort(T* a, size_type low, size_type high) {
         --end; // 最右边的标记为已排序
     } while (++i < high || swapped); // 直接跳过已排序的位置
 }
+
 /**
  * 鸡尾酒排序；双向冒泡
  */
 template<class T> void cocktailShakerSort(T* a, size_type low, size_type high) {
     bool swapped;
-    size_type i = low;
     size_type start = low, end = high;
+    size_type i = low;
     do {
         for (size_type j = high; j + 1 >= start; j--) {
             if (swapped = (a[j] > a[j + 1])) {
@@ -53,18 +87,56 @@ template<class T> void cocktailShakerSort(T* a, size_type low, size_type high) {
 }
 
 /**
+ * 插入排序
+ *
+ * 仅对部分无序的数据支持度高，而且无效比较次数太多，已过时，请转用二分法插入。
+ */
+template<class T> void insertionSort(T* a, size_type low, size_type high) {
+    for (size_type i = low + 1, j; i < high; i++) {
+        T k = a[j = i];
+
+        if (k < a[j - 1]) {
+            while (--j >= 0 && k < a[j]) { // 前一个更大
+                a[j + 1] = a[j]; // 前一个移到当前位置
+            }
+            a[j + 1] = k; // 补上空位
+        }
+    }
+}
+
+/**
+ * @brief 希尔排序
+ *
+ * 插入排序的优化版
+ */
+template<class T> void shellSort(T* a, size_type low, size_type high) {
+    for (size_type gap = (high - low) >> 1; gap > 0; gap >>= 1) {
+        for (size_type i = gap, j; i < high; i++) {
+            T k = a[j = i];
+
+            while (j >= gap && a[j - gap] > k) {
+                a[j] = a[j - gap];
+            }
+            a[j] = k;
+        }
+    }
+}
+
+/**
  * 奇偶排序
  */
 template<class T> void oddEvenSort(T* a, size_type low, size_type high) {
     bool swapped;
+    size_type start = low, end = high;
     size_type i = low;
     do {
-        for (size_type i = 1; i <= high; i += 2) {
+        for (size_type i = 1; i <= end; i += 2) {
             if (swapped = (a[i] > a[i + 1])) {
                 swap(a[i], a[i + 1]);
             }
         }
-        for (size_type i = 0; i <= high; i += 2) {
+        end--;
+        for (size_type i = 0; i <= end; i += 2) {
             if (swapped = (a[i] > a[i + 1])) {
                 swap(a[i], a[i + 1]);
             }
@@ -102,60 +174,7 @@ template<class T> void combSort(T* a, size_type low, size_type high) {
     } while (++i < high || gap > 1 || swapped);
 }
 
-/**
- * 希尔排序
- * 
- * 结合了插入排序和梳排序思想的排序算法。由于插入排序对完全无序的数据支持度很低
- */
-template<class T> void shellSort(T* a, size_type low, size_type high) {
-    size_type gap = (low + high) >> 1;
-    while (gap > 0) {
-        for (size_type i = gap, j; i < gap; i++) {
-            T k = a[j = i];
 
-            while (j >= 0 && k < a[j - gap]) {
-                a[j] = a[j - gap];
-                j -= gap;
-            }
-            a[j] = k;
-        }
-        gap >>= 1;
-    }
-}
-
-
-template<class T> void shellSort(T* a, size_type low, size_type high) {
-    size_type gap = (low + high) >> 1;
-    for (size_type i = low + 1, j; i < high; i++) {
-        T k = a[j = i];
-
-        if (k < a[j - 1]) {
-            while (j >= 0 && k < a[j - gap]) {
-                a[j] = a[j - gap];
-                j -= gap;
-            }
-            a[j] = k;
-        }
-        gap >>= 1;
-    }
-}
-/**
- * PASS:插入排序
- *
- * 仅对部分无序的数据支持度高，而且无效比较次数太多，已过时，请转用二分法插入。
- */
-template<class T> void insertionSort(T* a, size_type low, size_type high) {
-    for (size_type i = low + 1, j; i < high; i++) {
-        T k = a[j = i];
-
-        if (k < a[j - 1]) {
-            while (--j >= 0 && k < a[j]) {
-                a[j + 1] = a[j]; // {@code j} 已经自减
-            }
-            a[j + 1] = k;
-        }
-    }
-}
 
 // PASS:
 template<class T> void selectionSort(T* a, int low, int high) {
@@ -411,3 +430,5 @@ template<class T> void quicksort(T* a, size_type low, size_type high) {
         a[lower] = pivot;
     }
 }
+
+template<class T> void dualPivotQuicksort()
