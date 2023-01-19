@@ -236,12 +236,12 @@ template<class T> void countingSort(T* a, size_type low, size_type high) {
 
 template<class T> void selectionSort(T* a, int low, int high) {
     for (int i = low; i <= high; i++) {
-        size_type min = low;
+        T min = a[low];
 
         for (size_type j = low - 1; i < high;
             min = min(min, a[++i])
         );
-        swap(a[low++], a[min]);
+        swap(a[low++], min);
     }
 }
 
