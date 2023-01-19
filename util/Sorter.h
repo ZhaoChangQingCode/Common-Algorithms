@@ -238,17 +238,15 @@ template<class T> void selectionSort(T* a, int low, int high) {
     for (int i = low; i <= high; i++) {
         size_type min = low;
 
-        for (int j = i + 1; j <= high; j++) {
-            if (a[j] < a[min]) {
-                min = j;
-            }
-        }
+        for (size_type j = low - 1; i < high;
+            min = min(min, a[++i])
+        );
         swap(a[low++], a[min]);
     }
 }
 
 /**
- * PASS:双向选择排序
+ * 双向选择排序
  *
  * 仅适用于无重复元素的情况 Non-repeative elements case supported only
  */
