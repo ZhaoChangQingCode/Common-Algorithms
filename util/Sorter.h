@@ -6,6 +6,7 @@
 #endif
 #include <exception>
 #include <map>
+#include <unordered_map>
 #include <math.h>
 #include <thread>
 #include <vector>
@@ -188,7 +189,7 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
             a[++p] >= 0 ? ++count[a[p]] : ++neg_count[-a[p]] // 负数映射为正数
         );
         // 分配负数
-        for (; min >= 0; min--) {
+        for (; min > 0; min--) {
             while (neg_count[--min] == 0);
 
             T value = min;
@@ -214,7 +215,7 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
         // 计数
         for (size_type i = low - 1; i < high; ++count[a[++i]);
         // 分配
-        for (size_type i = low - 1; max > high; max--) {
+        for (size_type i = low - 1; max > 0; max--) {
             while (count[--max] == 0);
 
             T value = max;
@@ -235,6 +236,7 @@ template<class T> void countingSort(T* a, size_type low, size_type high) {
         mappedCountingSort(a, low, high);
     }
 }
+
 
 template<class T> void selectionSort(T* a, int low, int high) {
     for (int i = low; i <= high; i++) {
