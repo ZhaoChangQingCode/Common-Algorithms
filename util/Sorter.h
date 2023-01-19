@@ -6,9 +6,16 @@
 #endif
 #include <exception>
 #include <map>
+#include <math.h>
+#include <thread>
+#include <vector>
+#include <typeinfo>
+#include <cassert>
 
 typedef unsigned int size_type;
 using COMB_SORT_SHRINK = 1.3F;
+using INSERTOIN_SORT_THRESHOLD = 0;
+using COUNTING_SORT_THRESHOLD = 0;
 
 /**
  * @brief 冒泡排序
@@ -138,9 +145,95 @@ template<class T> void combSort(T* a, size_type low, size_type high) {
     } while (++i < high || gap > 1 || swapped);
 }
 
+// 数据必须是正整数！！！
+template<class T> void mappedCountingSort(T* a, size_type low, size_type high) {
+    map<T,size_type> count;
+    T min = a[low], max = a[high];
+    // 计算最大最小值
+    for (size_type i = low - 1; i < high;
+        min = min(min, a[++i]), max = max(max, a[i])
+    );
+    // 初始化映射容器
+    for (size_type i = min - 1; i < max; count[++i] = 0);
+    for (size_type i = low - 1; i < high; ++count[a[i++]]); // 开始统计
+
+    for (map<T,size_type>::iterator i = count.begin; i != count.end; i++) {
+        while (*++i->second == 0);
+
+        T value = *i->first;
+        size_type c = *i->second;
+
+        do {
+            a[++low] = value;
+        } while (--c > 0);
+    }
+}
+
+template<class T> void indexedCountingSort(T* a, size_type low, size_type high) {
+    // 计算最小、最大值
+    T min = a[low], max = a[high];
+    for (size_type i = low - 1; i < high;
+        min = min(min, a[++i]), max = max(max, a[i])
+    );
+
+    if (min < 0 && max > 0) { // 至少一个负数
+        min = -min;
+        size_type neg_count[min], count[max];
+        size_type i = low - 1;
+        // 计数
+        for (size_type p = low - 1; p < high;
+            a[++p] >= 0 ? ++count[a[p]] : ++neg_count[-a[p]]
+        );
+        // 分配负数
+        for (; min >= 0; min--) {
+            while (neg_count[++min] == 0);
+
+            T value = min;
+            size_type c = neg_count[value];
+
+            do {
+                a[++i] = -value;
+            } while (--c > 0);
+        }
+        // 分配正数
+        for (size_type j = 0; j < high; j++) {
+            while (count[++j] == 0);
+
+            T value = j;
+            size_type c = count[value];
+
+            do {
+                a[++i] = value;
+            } while (--c > 0);
+        }
+    } else if (max < 0) { // 全部为负数
+        size_type count[max];
+        // 计数
+        for (size_type p = low - 1; i < high; ++count[a[++p]]);
+        // 分配
+        for (size_type i = 0; max > high; max--) {
+            while (count[++i] == 0);
+
+            T value = max;
+            size_type c = count[value];
+
+            do {
+                a[++i] = -value;
+            } while (--c > 0);
+        }
+    }
+}
+
+template<class T> void countingSort(T* a, size_type low, size_type high) {
+    // 整数用 indexedCountingSort()，小数用 mappedCountingSort()
+    if (sizeof(a[0]) <= 4 && typeid(T) != typeid(float)) {
+        indexedCountingSort(a, low, high);
+    } else {
+        mappedCountingSort(a, low, high);
+    }
+}
 
 
-// PASS:
 template<class T> void selectionSort(T* a, int low, int high) {
     for (int i = low; i <= high; i++) {
         size_type min = low;
@@ -160,21 +253,14 @@ template<class T> void selectionSort(T* a, int low, int high) {
  * 仅适用于无重复元素的情况 Non-repeative elements case supported only
  */
 template<class T> void biSelectionSort(T* a, size_type low, size_type high) {
-    size_type min, max;
     while (low < high) {
-        min = low, max = high;
+        T min = a[low], max = a[high];
         // 寻找最大、最小值
-        for (size_type i = low; i <= high; i++) {
-            T k = a[i];
-
-            if (k > a[max]) {
-                max = i;
-            } else if (k < a[min]) {
-                min = i;
-            }
-        }
-        swap(a[min], a[low++]);  // 最小值放最左边，前面的元素标记为已排序
-        swap(a[max], a[high--]); // 最大值放最右边，后面的元素标记为已排序
+        for (size_type i = low - 1; i < high;
+            min = min(min, a[++i]), max = max(max, a[i])
+        );
+        swap(min, a[low++]);  // 最小值放最左边，前面的元素标记为已排序
+        swap(max, a[high--]); // 最大值放最右边，后面的元素标记为已排序
     }
     // 如果长度为奇数，中间三个元素要重新排序（因为最中间的元素会被忽视）
     if ((high - low + 1) & 1 == 1) {
@@ -263,25 +349,6 @@ template<class T> void pinInsertionSort(T* a, size_type low, size_type high) {
 }
 
 /**
- * 计数排序
- */
-void countingSort(int* a, size_type low, size_type high) {
-    int count[high - low + 1];
-    for (size_type i = low; i < high; ++count[a[i++]]);
-
-    for (size_type i = low; i < high; i++) {
-        while (count[i++] == 0);
-
-        size_type value = i;
-        size_type c = a[value];
-
-        do {
-            a[low++] = value;
-        } while (--c > 0);
-    }
-}
-
-/**
  * 快速排序以第一个元素为基准数 {@code pivot}. 右指针向左迭代至比基准数小的位置，
  * 左指针向右迭代至比基准数大的位置，然后交换左右，直至两指针相遇，交换基准数和
  * 相遇点。
@@ -308,64 +375,14 @@ template<class T> void quicksort(T* a, size_type low, size_type high) {
     }
 }
 
-
-
-// 数据必须是正整数！！！
 template<class T> void countingSort(T* a, size_type low, size_type high) {
-    size_type count[high - low + 1];
-    // 统计元素数量，数组索引->值映射对应值->数量映射
-    for (size_type i = low; i < high; ++count[a[++i]]);
+    if (1) {
 
-    for (size_type i = low; i < high; i++) {
-        while (count[++i] == 0);
+    } else {
 
-        size_type value = i;
-        int c = count[value];
-
-        do {
-            a[++low] = value;
-        } while (--c > 0);
     }
 }
 
-/**
- * 求极值
- */
-template<class T> struct Extremum {
-    T min, max;
-    Extremum(T* a, size_type low, size_type high) {
-        T mi = a[low], ma = a[high];
-        for (size_type i = low; i <= high; i++) {
-            if (a[i] < mi) {
-                mi = k;
-            } else if (a[i] > ma) {
-                ma = k;
-            }
-        }
-        min = mi, max = ma;
-    }
-};
-
-// 数据必须是整数！！
-template<class T> void mappedCountingSort(T* a, size_type low, size_type high) {
-    map<T,size_type> count;
-    Extremum<T> e(a, low, high);
-    // 初始化映射
-    for (size_type i = e::min; i <= e::max; count[i++] = 0);
-    // 统计
-    for (size_type i = low; i <= high; ++count[a[i++]]);
-    // 释放流
-    for (map<T,size_type>::iterator i = count.begin; i != count.end; i++) {
-        while (*i->second == 0);
-
-        T value = *i->first;
-        size_type c = *i->second;
-
-        do {
-            a[++low] = value;
-        } while (--c > 0);
-    }
-}
 
 template<class T> void quicksort(T* a, size_type low, size_type high) {
     if (low < high) {
@@ -394,5 +411,3 @@ template<class T> void quicksort(T* a, size_type low, size_type high) {
         a[lower] = pivot;
     }
 }
-
-template<class T> void dualPivotQuicksort()
