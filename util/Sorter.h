@@ -145,17 +145,20 @@ template<class T> void combSort(T* a, size_type low, size_type high) {
     } while (++i < high || gap > 1 || swapped);
 }
 
-// 数据必须是正整数！！！
+/**
+ * 计数排序（键值对映射的）
+ */
 template<class T> void mappedCountingSort(T* a, size_type low, size_type high) {
-    map<T,size_type> count;
+    ordered_map<T,size_type> count;
     T min = a[low], max = a[high];
     // 计算最大最小值
-    for (size_type i = low - 1; i < high;
-        min = min(min, a[++i]), max = max(max, a[i])
-    );
+    // for (size_type i = low - 1; i < high;
+    //     min = min(min, a[++i]), max = max(max, a[i])
+    // );
     // 初始化映射容器
-    for (size_type i = min - 1; i < max; count[++i] = 0);
-    for (size_type i = low - 1; i < high; ++count[a[i++]]); // 开始统计
+    for (size_type i = low - 1; i < high; count[++i] = 0);
+    // 计数
+    for (size_type i = low - 1; i < high; ++count[a[++i]]);
 
     for (map<T,size_type>::iterator i = count.begin; i != count.end; i++) {
         while (*++i->second == 0);
@@ -175,18 +178,18 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
     for (size_type i = low - 1; i < high;
         min = min(min, a[++i]), max = max(max, a[i])
     );
-
-    if (min < 0 && max > 0) { // 至少一个负数
+    // 至少一个负数
+    if (min < 0 && max > 0) {
         min = -min;
         size_type neg_count[min], count[max];
         size_type i = low - 1;
         // 计数
         for (size_type p = low - 1; p < high;
-            a[++p] >= 0 ? ++count[a[p]] : ++neg_count[-a[p]]
+            a[++p] >= 0 ? ++count[a[p]] : ++neg_count[-a[p]] // 负数映射为正数
         );
         // 分配负数
         for (; min >= 0; min--) {
-            while (neg_count[++min] == 0);
+            while (neg_count[--min] == 0);
 
             T value = min;
             size_type c = neg_count[value];
@@ -209,10 +212,10 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
     } else if (max < 0) { // 全部为负数
         size_type count[max];
         // 计数
-        for (size_type p = low - 1; i < high; ++count[a[++p]]);
+        for (size_type i = low - 1; i < high; ++count[a[++i]);
         // 分配
-        for (size_type i = 0; max > high; max--) {
-            while (count[++i] == 0);
+        for (size_type i = low - 1; max > high; max--) {
+            while (count[--max] == 0);
 
             T value = max;
             size_type c = count[value];
@@ -232,7 +235,6 @@ template<class T> void countingSort(T* a, size_type low, size_type high) {
         mappedCountingSort(a, low, high);
     }
 }
-
 
 template<class T> void selectionSort(T* a, int low, int high) {
     for (int i = low; i <= high; i++) {
