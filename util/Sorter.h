@@ -120,11 +120,15 @@ template<class T> void oddEvenSort(T* a, size_type low, size_type high) {
  * 地精排序，冒泡排序的优化版，减少了无效迭代。
  */
 template<class T> void gnomeSort(T* a, size_type low, size_type high) {
-    for (size_type i = low + 1, j; i <= high; i++) {
-        if (a[i - 1] <= a[i] || j < 0) {
-            j = i++;
+    for (size_type i = low, j; i + 1 < high;) {
+        if (i <= 0) {
+            if ([i] <= a[i + 1]) { // 往后
+                j = i++;
+            } else {
+                swap(a[i], a[i-- + 1]);
+            }
         } else {
-            swap(a[j - 1], a[j--]);
+            i = j;
         }
     }
 }
@@ -186,7 +190,7 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
         size_type i = low - 1;
         // 计数
         for (size_type p = low - 1; p < high;
-            a[++p] >= 0 ? ++count[a[p]] : ++neg_count[-a[p]] // 负数映射为正数
+            a[++p] >= 0 ? ++count[a[p]] : ++neg_count[-a[p]] // 负数转为正数
         );
         // 分配负数
         for (; min > 0; min--) {
@@ -213,8 +217,8 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
     } else if (max < 0) { // 全部为负数
         size_type count[max];
         // 计数
-        for (size_type i = low - 1; i < high; ++count[a[++i]);
-        // 分配
+        for (size_type i = low - 1; i < high; ++count[-a[++i]); // 负数转为正数
+        // 从大到小分配
         for (size_type i = low - 1; max > 0; max--) {
             while (count[--max] == 0);
 
@@ -222,7 +226,7 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
             size_type c = count[value];
 
             do {
-                a[++i] = -value;
+                a[++i] = -value; // 将正数转为负数
             } while (--c > 0);
         }
     }
