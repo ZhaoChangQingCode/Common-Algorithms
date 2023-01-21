@@ -33,17 +33,35 @@
 | 冒泡排序 | O(n) | O(n<sup>2</sup>) | O(n<sup>2</sup>) |
 | 选择排序 | O(n<sup>2</sup>) | O(n<sup>2</sup>) | O(n<sup>2</sup>) |
 | 双向选择 | O(n) | O(n<sup>2</sup>) | O(n<sup>2</sup>) |
-| 希尔排序   | O(n log<sub>2</sub>n) | O(n<sup>2</sup>) | O(n<sup>2</sup>) |     
+| 希尔排序   | O(n log n) | O(n<sup>2</sup>) | O(n<sup>2</sup>) |     
 | 插入排序 |  O(n) | O(n<sup>2</sup>) | O(n<sup>2</sup>) |
-| 梳排序 | O(n log<sub>2</sub>n) | O(n<sup>2</sup>) | O(n<sup>2</sup>) | 数组接近或已经有序时达到最佳 |
-| 归并排序 | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) |
-| 快速排序 | O(n log<sub>2</sub>n) | O(n<sup>2</sup>) | O(n log<sub>2</sub>n) | 轴心为数组中位数时达到最佳 |
-| 双轴快排 | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) |
-| Tim Sort | O(n) | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) |
-| 堆排序 | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) |
+| 梳排序 | O(n log n) | O(n<sup>2</sup>) | O(n<sup>2</sup>) | 数组接近或已经有序时达到最佳 |
+| 归并排序 | O(n log n) | O(n log n) | O(n log n) |
+| 快速排序 | O(n log n) | O(n<sup>2</sup>) | O(n log n) | 轴心为数组中位数时达到最佳 |
+| 双轴快排 | O(n log n) | O(n log n) | O(n log n) |
+| Tim Sort | O(n) | O(n log n) | O(n log n) |
+| 堆排序 | O(n log n) | O(n log n) | O(n log n) |
 | 计数排序 |  | | |
 | 桶排序 ||||
 | 基数排序||||
+
+## 排序算法空间复杂度
+| 算法 | 注 |
+|:--:|:-|
+| 冒泡排序 | O(n) |
+| 选择排序 | O(n<sup>2</sup>) |
+| 双向选择 | O(n) |
+| 希尔排序 | O(n log<sub>2</sub>n) | O(n<sup>2</sup>) | O(n<sup>2</sup>) |     
+| 插入排序 |  O(n) | O(n<sup>2</sup>) | O(n<sup>2</sup>) |
+| 梳排序   | O(n log<sub>2</sub>n) | O(n<sup>2</sup>) | O(n<sup>2</sup>) | 数组接近或已经有序时达到最佳 |
+| 归并排序 | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) |
+| 快速排序 | O(n log<sub>2</sub>n) | O(n<sup>2</sup>) | O(n log<sub>2</sub>n) | 轴心为数组中位数时达到最佳 |
+| 双轴快排 | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) |
+| Tim Sort| O(n) | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) |
+| 堆排序   | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) | O(n log<sub>2</sub>n) |
+| 计数排序 |  | | |
+| 桶排序   ||||
+| 基数排序 ||||
 
 O(n)
 
