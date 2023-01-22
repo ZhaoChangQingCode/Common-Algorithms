@@ -1,17 +1,17 @@
 ## 排序算法时间复杂度
 | 算法 | 最佳<a href="#id"><sup>【注<sub>1</sub>】</sup></a> | 最差<a href="#id2"><sup>【注<sub>2</sub>】</sup></a> | 平均 | 注 |
 |:--:|:-|:-|:-|:-|
-| 冒泡排序 | O(n)             | O(n<sup>2</sup>) | O(n<sup>2</sup>) |  |
-| 选择排序 | O(n<sup>2</sup>) | O(n<sup>2</sup>) | O(n<sup>2</sup>) | 同上 |
-| 双向选择 | O(n)             | O(n<sup>2</sup>) | O(n<sup>2</sup>) | 同上 |
-| 希尔排序 | O(n log n)       | O(n<sup>2</sup>) | O(n log n)       | 同上 |
-| 插入排序 | O(n)             | O(n<sup>2</sup>) | O(n<sup>2</sup>) | 同上 |
-| 梳排序   | O(n log n)       | O(n<sup>2</sup>) | O(n<sup>2</sup>) | 同上 |
-| 归并排序 | O(n log n)       | O(n log n)       | O(n log n)       | 同上 |
+| 冒泡排序 | O(n)             | O(n<sup>2</sup>) | O(n<sup>2</sup>) |
+| 选择排序 | O(n<sup>2</sup>) | O(n<sup>2</sup>) | O(n<sup>2</sup>) |
+| 双向选择 | O(n)             | O(n<sup>2</sup>) | O(n<sup>2</sup>) |
+| 希尔排序 | O(n log n)       | O(n<sup>2</sup>) | O(n log n)       |
+| 插入排序 | O(n)             | O(n<sup>2</sup>) | O(n<sup>2</sup>) |
+| 梳排序   | O(n log n)       | O(n<sup>2</sup>) | O(n<sup>2</sup>) |
+| 归并排序 | O(n log n)       | O(n log n)       | O(n log n)       |
 | 快速排序 | O(n log n)       | O(n<sup>2</sup>) | O(n log n)       | 轴心为数组中位数时达到最佳 |
-| 双轴快排 | O(n log n)       | O(n<sup>2</sub>) | O(n log n)       |数组接近或已经有序时达到最佳
-| Tim Sort | O(n)             | O(n log n)      | O(n log n)       | 同上 |
-| 堆排序   | O(n log n)       | O(n log n)       | O(n log n)       | 同上 |
+| 双轴快排 | O(n log n)       | O(n<sup>2</sub>) | O(n log n)       |
+| Tim Sort | O(n)             | O(n log n)      | O(n log n)       |
+| 堆排序   | O(n log n)       | O(n log n)       | O(n log n)       |
 | 计数排序 |  | | |
 | 桶排序 ||||
 | 基数排序||||
