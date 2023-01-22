@@ -1,5 +1,5 @@
 ## 排序算法时间复杂度
-| 算法 | 最佳<a href="#id"><sup>【注<sub>1</sub>】</sup></a> | 最差<a href="#id1"><sup>【注<sub>2</sub>】</sup></a> | 平均 | 注 |
+| 算法 | 最佳<a href="#id"><sup>【注<sub>1</sub>】</sup></a> | 最差<a href="#id2"><sup>【注<sub>2</sub>】</sup></a> | 平均 | 注 |
 |:--:|:-|:-|:-|:-|
 | 冒泡排序 | O(n)             | O(n<sup>2</sup>) | O(n<sup>2</sup>) |  |
 | 选择排序 | O(n<sup>2</sup>) | O(n<sup>2</sup>) | O(n<sup>2</sup>) | 同上 |
