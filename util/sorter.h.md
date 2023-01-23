@@ -12,12 +12,13 @@
 | 双轴快排 | O(n log n)       | O(n<sup>2</sub>) | O(n log n)       |
 | Tim Sort | O(n)             | O(n log n)      | O(n log n)       |
 | 堆排序   | O(n log n)       | O(n log n)       | O(n log n)       |
-| 计数排序 | O(n + *k*)       | O(n + *k*)       | O(n + *k*)       |
+| 计数排序 | O(n + *`k`*)     | O(n + *`k`*)     | O(n + *`k`*)       |
 | 桶排序   ||||
-| 基数排序 | O(n *k*)         |  O(n *k*)        |  O(n *k*) |
+| 基数排序 | O(n *`k`*)       |  O(n *`k`*)      |  O(n *`k`*) |
 
 <p id="id" style="display:inline-block">【注<sub>1</sub>】一般指的是数组接近或已经有序的情况</p>
 <p id="id2" style="display:inline-block">【注<sub>2</sub>】一般指的是数组接近或完全无序的情况</p>
+【注】O(1) < O(log n) < O(n) < O(n log n) < O(n<sup>2</sup>) < O(n<sup>3</sup>) < O(n!) < O(n<sup>n</sup>)
 
 ## 排序算法空间复杂度
 | 算法 | 注 |
