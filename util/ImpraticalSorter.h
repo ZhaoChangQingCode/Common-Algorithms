@@ -4,11 +4,12 @@ using size_type = unsigned int;
 
 template<class T> bool isSorted(T* a, size_type low, size_type high) {
     bool sorted;
-
     size_type i = low - 1;
+
     do {
         sorted = (a[++i] < a[i + 1]);
     } while (i + 1 < high && sorted);
+
     return i == high - low;
 }
 
