@@ -141,7 +141,7 @@ template<class T> void combSort(T* a, size_type low, size_type high) {
     do {
         gap = (size_type) (gap / COMB_SORT_SHRINK);
         for (size_type i = low; i + gap <= high; i++) {
-            if (swapped = (a[i] > a[i + gap]) {
+            if (swapped = (a[i] > a[i + gap])) {
                 swap(a[i], a[i + gap]);
             }
         }
@@ -179,24 +179,20 @@ template<class T> void mappedCountingSort(T* a, size_type low, size_type high) {
  * 计数排序（索引）
  */
 template<class T> void indexedCountingSort(T* a, size_type low, size_type high) {
-    // 计算最小、最大值
     T min = a[low], max = a[low];
     for (size_type i = low - 1; i < high;
         min = min(min, a[++i]), max = max(max, a[i])
     );
-    // 至少一个负数
+
     if (min < 0 && max > 0) {
-        /**
-         * 正数、零和负数分开计数
-         */
         min = -min;
         size_type neg_count[min], count[max];
         size_type i = low - 1;
-        // 计数
+
         for (size_type p = low - 1; p < high;
             a[++p] >= 0 ? ++count[a[p]] : ++neg_count[-a[p]] // 负数转为正数
         );
-        // 分配负数
+
         while (min > 0) {
             while (neg_count[--min] == 0);
 
@@ -207,7 +203,7 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
                 a[++i] = -value;
             } while (--c > 0);
         }
-        // 分配正数
+
         while (i < high) {
             while (count[++i] == 0);
 
@@ -219,13 +215,10 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
             } while (--c > 0);
         }
     } else if (max < 0) {
-        /**
-         * 全部为负数时
-         */
         size_type count[max];
-        // 计数
-        for (size_type i = low - 1; i < high; ++count[-a[++i]); // 负数转为正数
-        // 从大到小分配
+
+        for (size_type i = low - 1; i < high; ++count[-a[++i]]); // 负数转为正数
+
         for (size_type i = low - 1; max > 0;) {
             while (count[--max] == 0);
 
@@ -239,45 +232,6 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
     }
 }
 
-using LONG_MASK = 0xffffffffL;
-
-/**
- * 基数排序
- */
-template<class T> void radixSort(T* a, size_type low, size_type high) {
-    T max = a[high];
-    T result[high - low + 1];
-    T count[10];
-
-    for (size_type i = low - 1; i < high; max = max(max, a[++i]));
-    // 重复最大值位数次，exp=1：个位；10十位；100百位
-    for (size_type exp = 1; max / exp > 0; exp *= 10) {
-        for (size_type i = low - 1; i < high; ++count[(a[++i] / exp) % 10]); // 当前数位
-
-        for (size_type i = high; i >= 0; i--) {
-            result[count[(a[i] / exp) % 10] - 1] = a[i]; // （当前数位的量 - 1）-> i
-            --count[(a[i] / exp) % 10];
-        }
-        for (size_type i = low - 1; i < high; i++) {
-            while (count[++i] == 0);
-
-            T value = i;
-            size_type c = count[value];
-
-            do {
-                a[++i] = value;
-            } while (--c > 0);
-        }
-    }
-}
-
-template<class T> void radixSort(T* a, size_type low, size_type high) {
-    if (sizeof(a[0] <= 4 && typeid(T) != typeid(float)) {
-        radixSort(a, low, high);
-    } else {
-        // 使用
-    }
-}
 
 template<class T> void countingSort(T* a, size_type low, size_type high) {
     if (sizeof(a[0]) <= 4 && typeid(T) != typeid(float)) { // 整数类型（char、short、int、long）？
@@ -294,7 +248,7 @@ template<class T> void selectionSort(T* a, int low, int high) {
     for (int i = low; i <= high; i++) {
         T min = a[low]; // 实时更新
 
-        for (size_type j = low - 1; i < high;
+        for (size_type j = low; j < high;
             min = min(min, a[++i])
         );
         swap(a[low++], min);
@@ -305,6 +259,8 @@ template<class T> void selectionSort(T* a, int low, int high) {
  * 双向选择排序
  */
 template<class T> void biSelectionSort(T* a, size_type low, size_type high) {
+    size_type size = high - low + 1;
+
     while (low < high) {
         T min = a[low], max = a[high];
         // 寻找最大、最小值
@@ -320,8 +276,8 @@ template<class T> void biSelectionSort(T* a, size_type low, size_type high) {
         swap(min, a[low++]);  // 最小值放最左边，前面的元素标记为已排序
         swap(max, a[high--]); // 最大值放最右边，后面的元素标记为已排序
     }
-    // 如果长度为奇数，中间三个元素要重新排序（因为最中间的元素会被忽视）
-    if ((high - low + 1) & 1 == 1) {
+
+    if (size & 1 == 1) {
         insertionSort(a, --min, ++max);
     }
 }
@@ -346,6 +302,7 @@ template<class T> void binaryInsertionSort(T* a, size_type low, size_type high) 
                 left = mid + 1;
             }
         }
+
         for (size_type j = i - 1; j-- > low; a[j + 1] = a[j]);
         a[left] = k;
     }
@@ -406,257 +363,39 @@ template<class T> void pinInsertionSort(T* a, size_type low, size_type high) {
     }
 }
 
-/**
- * 快速排序以第一个元素为基准数 {@code pivot}. 右指针向左迭代至比基准数小的位置，
- * 左指针向右迭代至比基准数大的位置，然后交换左右，直至两指针相遇，交换基准数和
- * 相遇点。
- */
-template<class T> void quicksort(T* a, size_type low, size_type high) {
-    if (low <= high) {
-        T pivot = a[low];
-        size_type left = low, right = high;
+template<class T> void radixSort(T* a, size_type low, size_type high) {}
 
-        while (true) {
-            while (a[left] <= pivot && ++left < high);
-            while (a[right] >= pivot && --right > low);
+template<class T> void dualPivotQuicksort(T* a, size_type low, size_type high) {}
 
-            if (left >= right) {
-                break;
-            }
-            swap(a[left], a[right]);
-        }
-        a[low] = a[right];
-        a[right] = pivot;
-
-        quicksort(a, low, right - 1);
-        quicksort(a, right + 1, high);
-    }
-}
-
-using MAX_SHELL_SORT_SIZE = 64;
-using MAX_COMB_SORT_SIZE = 1024;
-using RADIX_SORT_THRESHOLD = 0;
-
-/**
- * using Shell Sort          , (0   , 64]
- * using Comb Sort           , (64  , 1024]
- * using Radix Sort,  int type case
- * using Dual-Pivot Quicksort, otherwise.
- */
 template<class T> void sort(T* a, size_type low, size_type high) {
     size_type size = high - low + 1;
 
-    if (size <= MAX_SHELL_SORT_SIZE) {
+    /**
+     * 对小容量数组使用希尔排序
+     */
+    if (size <= COMB_SORT_THRESHOLD) {
         shellSort(a, low, high);
-    } else if (size <= MAX_COMB_SORT_SIZE) {
+        return;
+    }
+
+    /**
+     * 对中等容量数组使用梳排序
+     */
+    if (size <= QUICKSORT_THRESHOLD) {
         combSort(a, low, high);
+        return;
     }
-    if (sizeof(a[0]) <= 4 && typeid(T) != typeid(float)) {
-        countingSort(a, low, high);
-    } else {
-        dualPivotQuicksort(a, low, high);
+
+    /**
+     * 对大容量*整数*数组使用基数排序
+     */
+    if (size && sizeof(T) <= 4 && typeid(T) != typeid(float)) {
+        radixSort(a, low, high);
+        return;
     }
-}
 
-void sort(const char* a, size_type low, size_type high) {
-    countingSort(a, low, high);
-}
-
-// ChatGPT version
-template<class T> void dualPivotQuicksort(T* a, size_type low, size_type high) {
-    if (low < high) {
-        T pivot1 = a[low];
-        T pivot2 = a[high];
-        size_type left = low;
-        size_type right = high;
-
-        while (left <= right) {
-            while (a[left] < pivot1 && ++left < high);
-            while (a[right] > pivot2 && --right > low);
-
-            swap(a[left++], a[right--]);
-        }
-        swap(a[low], a[right]);
-        swap(a[high], a[low]);
-
-        dualPivotQuicksort(a, low, right - 1);
-        dualPivotQuicksort(a, righ);
-    }
-}
-
-
-/**
- * Traditonal 3-way (Dutch National Flag) partitioning
- * 
- * +---------+---------+---------+---------+
- * | < pivot |    ?    | == pivot| > pivot |
- * +---------+---------+---------+---------+
- *          ^         ^           ^
- *          |         |           |
- *        left        k         right
- */
-template<class T> void quicksort(T* a, size_type low, size_type high) {
-    if (low < high) {
-        T pivot = a[low];
-
-        size_type lower = low;
-        size_type upper = high;
-
-        for (size_type i = ++upper; --i > lower; ) {
-            T k = a[i];
-
-            if (k != pivot) {
-                a[i] = pivot;
-
-                if (k < pivot) {
-                    while (a[++lower] < pivot);
-
-                    if (a[lower] > pivot) {
-                        a[--upper] = a[lower];
-                    }
-                    a[lower] = k;
-                } else {
-                    a[--upper] = k;
-                }
-            }
-        }
-
-        a[low] = a[lower];
-        a[lower] = pivot;
-
-        quicksort(a, low, left - 1);
-        quicksort(a, left + 1, high);
-    }
-}
-
-/**
- *
- * +----------+---+------------------------+----------+
- * | < pivot1 | ? | >= pivot1 && <= pivot2 | > pivot2 |
- * +----------+---+------------------------+----------+
- *           ^   ^                          ^
- *           |   |                          |
- *         left  k                        right
- *
- * (low, left]   < pivot1
- * (k, right)   <= pivot2
- * [right, high) > pivot2
- */
-template<class T> void dualPivotQuicksort(T* a, size_type low, size_type high) {
-    if (low < high) {
-        size_type lower = low;
-        size_type upper = high;
-
-        T pivot1 = a[lower];
-        T pivot2 = a[upper];
-
-        while (a[++lower] < pivot1);
-        while (a[--upper] > pivot2);
-
-        for (size_type i = --upper, k = ++upper; --k > lower;) {
-            T k = a[i];
-
-            if (k < pivot1) {
-                while (lower < k) {
-                    if (a[++lower] >= pivot1) {
-                        if (a[lower] > pivot2) {
-                            a[i] = a[--upper];
-                            a[upper]  = a[lower];
-                        } else {
-                            a[i] = a[lower];
-                        }
-                        a[lower] = k;
-                        break;
-                    }
-                }
-            } else if (k > pivot2) {
-                a[i] = a[--upper];
-                a[upper] = k;
-            }
-        }
-
-        a[low] = a[lower];
-        a[lower] = pivot1;
-        a[high] = a[upper];
-        a[upper] = pivot2;
-
-        quicksort(a, low, upper - 1);
-        quicksort(a, upper + 1, high);
-    }
-}
-
-template<class T> void radixSort(T* a, size_type low, size_type high) {
-    T max = a[high];
-    T result[high - low + 1] {0};
-    T count[10] {0};
-
-    for (size_type i = low - 1; i < high; max = max(max, a[++i]));
-    // 重复最大值位数次，exp=1：个位；10十位；100百位
-    for (size_type exp = 1; max / exp > 0; exp *= 10) {
-        for (size_type i = low - 1; i < high; ++count[(a[++i] / exp) % 10]); // 当前数位
-
-        for (size_type i = high; i >= 0; i--) {
-            result[count[(a[i] / exp) % 10] - 1] = a[i]; // （当前数位的量 - 1）-> i
-            --count[(a[i] / exp) % 10];
-        }
-        for (size_type i = low - 1; i < high;) {
-            while (count[++i] == 0);
-
-            T value = i;
-            size_type c = count[value];
-
-            do {
-                a[++i] = value;
-            } while (--c > 0);
-        }
-    }
-}
-
-#include "UnsupportedOperationException.h"
-
-template<class T> void indexedRadixSort(T* a, size_type low, size_type high) {}
-
-template<class T> void mappedRadixSort(T* a, size_type low, size_type high) {
-    switch (typeid(T)) {
-        case typeid(float): {
-
-        }
-
-        case typeid(double): {
-
-        }
-
-        case typeid(long double): {
-
-        }
-    }
-}
-
-inline int at(float x, int i) {
-    if (i >= -23) {
-        return (abs(x) >> (23 + i)) % 10;
-    }
-    return 0;
-}
-
-inline at(double x, int i) {
-    if (i >= 52) {
-        return (abs(x) >> (52 + i)) % 10;
-    }
-    return 0;
-}
-
-template<class T> void radixSort(T* a, size_type low, size_type high) {
-    if (sizeof(a[0]) <= 4 && typeid(T) != typeid(float)) {
-        indexedRadixSort(a, low, high);
-    } else {
-        mappedRaixSort(a, low, high);
-    }
-}
-
-/**
- * 内省排序
- */
-template<class T> void introsort(T* a, size_type low, size_type high) {
-    
+    /**
+     * 使用双轴快速排序
+     */
+    dualPivotQuicksort(a, low, high);
 }
