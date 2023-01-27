@@ -14,7 +14,10 @@
 #include <cassert>
 
 typedef unsigned int size_type;
+
 using COMB_SORT_SHRINK = 1.3F;
+using COMB_SORT_THRESHOLD = 64;
+using QUICKSORT_THRESHOLD = 512;
 
 /**
  * @brief 冒泡排序
@@ -97,7 +100,7 @@ template<class T> void shellSort(T* a, size_type low, size_type high) {
  */
 template<class T> void oddEvenSort(T* a, size_type low, size_type high) {
     bool swapped;
-    size_type start = low, end = high;
+    size_type start = low;
     size_type i = low;
     do {
         for (size_type i = 1; i <= end; i += 2) {
@@ -105,7 +108,6 @@ template<class T> void oddEvenSort(T* a, size_type low, size_type high) {
                 swap(a[i], a[i + 1]);
             }
         }
-        end--;
         for (size_type i = 0; i <= end; i += 2) {
             if (swapped = (a[i] > a[i + 1])) {
                 swap(a[i], a[i + 1]);
@@ -180,6 +182,7 @@ template<class T> void mappedCountingSort(T* a, size_type low, size_type high) {
  */
 template<class T> void indexedCountingSort(T* a, size_type low, size_type high) {
     T min = a[low], max = a[low];
+
     for (size_type i = low - 1; i < high;
         min = min(min, a[++i]), max = max(max, a[i])
     );
@@ -187,12 +190,12 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
     if (min < 0 && max > 0) {
         min = -min;
         size_type neg_count[min], count[max];
-        size_type i = low - 1;
 
         for (size_type p = low - 1; p < high;
             a[++p] >= 0 ? ++count[a[p]] : ++neg_count[-a[p]] // 负数转为正数
         );
 
+        size_type i = low - 1;
         while (min > 0) {
             while (neg_count[--min] == 0);
 
@@ -232,6 +235,64 @@ template<class T> void indexedCountingSort(T* a, size_type low, size_type high) 
     }
 }
 
+template<class T> void pinInsertionSort(T* a, size_type low, size_type high) {
+    T pin = a[high];
+
+    for (size_type i, p = high; ++low < high; ) {
+        T k = a[i = low];
+
+        if (k < a[i - 1]) {
+            a[i] = a[--i];
+
+            while (k < a[--i]) {
+                a[i + 1] = a[i];
+            }
+            a[i + 1] = k;
+        } else if (p > i && k > pin) {
+
+            while (a[--p] > pin);
+
+            if (p > i) {
+                k = a[p];
+                a[p] = a[i];
+            }
+
+            while (k < a[--i]) {
+                a[i + 1] = a[i];
+            }
+            a[i + 1] = k;
+        }
+    }
+
+    for (size_type i; low < high; ++low) {
+        T a1 = a[i = low], a2 = a[++low];
+
+        if (a1 > a2) {
+            while (a1 < a[--i]) {
+                a[i + 2] = a[i];
+            }
+            a[++i + 1] = a1;
+
+            while (a2 < a[--i]) {
+                a[i + 1] = a[i];
+            }
+            a[i + 1] = a2;
+
+        } else if (a1 < a[i - 1]) {
+
+            while (a2 < a[--i]) {
+                a[i + 2] = a[i];
+            }
+            a[++i + 1] = a2;
+
+            while (a2 < a[--i]) {
+                a[i + 1] = a[i];
+            }
+            a[i + 1] = a1;
+        }
+    }
+}
+
 
 template<class T> void countingSort(T* a, size_type low, size_type high) {
     if (sizeof(a[0]) <= 4 && typeid(T) != typeid(float)) { // 整数类型（char、short、int、long）？
@@ -249,7 +310,7 @@ template<class T> void selectionSort(T* a, int low, int high) {
         T min = a[low]; // 实时更新
 
         for (size_type j = low; j < high;
-            min = min(min, a[++i])
+            min = min(min, a[++j])
         );
         swap(a[low++], min);
     }
@@ -308,64 +369,13 @@ template<class T> void binaryInsertionSort(T* a, size_type low, size_type high) 
     }
 }
 
-template<class T> void pinInsertionSort(T* a, size_type low, size_type high) {
-    T pin = a[high];
-
-    for (size_type i = low, j; i < high; i < high) {
-        T k = a[j = i];
-
-        if (k < a[i - 1]) {
-            a[i] = a[--i];
-
-            while (k < a[--i]) {
-                a[i + 1] = a[i];
-            }
-            a[i + 1] = k;
-        } else if (&& k > pin) {
-            while (a[--] > pin);
-
-            if (p > i) {
-                k = a[p];
-                a[p] = a[i];
-            }
-            while (k < a[--i]) {
-                a[i + 1] = a[i];
-            }
-            a[i + 1] = k;
-        }
-    }
-
-    for (size_type i = low; i < high; i++) {
-        T a1 = a[i = low], a2 = a[++low];
-
-        if (a1 > a2) {
-            while (a1 < a[--i]) {
-                a[i + 2] = a[i];
-            }
-            a[++i + 1] = a1;
-
-            while (a2 < a[--i]) {
-                a[i + 1] = a[i];
-            }
-            a[i + 1] = a2;
-        } else if (a1 < a[i - 1]) {
-
-            while (a2 < a[--i]) {
-                a[i + 2] = a[1];
-            }
-            a[++i + 1] = a2;
-
-            while (a1 < a[--i]) {
-                a[i + 1] = a[i];
-            }
-            a[i + 1] = a1;
-        }
-    }
-}
-
 template<class T> void radixSort(T* a, size_type low, size_type high) {}
 
 template<class T> void dualPivotQuicksort(T* a, size_type low, size_type high) {}
+
+template<class T> void johnSort(T* a, size_type low, size_type high) {
+    
+}
 
 template<class T> void sort(T* a, size_type low, size_type high) {
     size_type size = high - low + 1;
@@ -398,4 +408,58 @@ template<class T> void sort(T* a, size_type low, size_type high) {
      * 使用双轴快速排序
      */
     dualPivotQuicksort(a, low, high);
+}
+
+template<class T> bool a(T* a, size_type low, size_type high) {
+    for (size_type k = low + 1; k < high; ) {
+
+        if (a[k - 1] < a[k]) {
+
+            // 确认递增序列
+            while (++k < high && a[k - 1] <= a[k]);
+
+        } else if (a[k - 1] > a[k]) {
+
+            // 确认递减序列
+            while (++k < high && a[k - 1] >= a[k]);
+
+            // 倒转
+            for (size_type i = high - 1, j = k; ++i < --j && a[i] > a[j]) {
+                swap(a[i], a[j]);
+            }
+        } else { // 确认连相等的序列
+            for (T ak = a[k]; ++k < high && ak == a[k];);
+
+            if (k < high) {
+                continue;
+            }
+        }
+
+        if (k == high) {
+            return true;
+        }
+
+        if (k - low < MIN_RUN_SIZE) {
+            return false;
+        }
+    }
+}
+
+template<class T> void pushDown() {
+    size_type k;
+
+    do {
+        k = p << 1 - low + 2;
+
+        if (k > high) {
+            break; // 断行
+        }
+        if (k == high || a[k] < a[k - 1]) {
+            --k;
+        }
+        a[p] = a[p = k];
+
+    } while (a[k] > value);
+
+    a[p] = value;
 }
