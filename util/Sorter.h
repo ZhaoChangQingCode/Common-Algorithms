@@ -4,7 +4,7 @@
  * 此代码为免费参阅，可以任意修改、传播，希望此举措可以有所帮助。
  * 如果您发现了一个错误，请联系我：956995844@QQ
  */
-#include <cmath>
+#include <math.h>
 
 typedef unsigned int size_type;
 
