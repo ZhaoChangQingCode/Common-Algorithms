@@ -11,7 +11,11 @@ import jdk.internal.vm.annotation.ForceInline;
 import sun.misc.Unsafe;
 
 public class Sorter {
-
+    /**
+     * 用反射机制获取 Unsafe 实例。来实现 C++ 的引用访问
+     *
+     * @see {@link #swap(T, T)}
+     */
     private static Unsafe unsafe;
     private static Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
 
