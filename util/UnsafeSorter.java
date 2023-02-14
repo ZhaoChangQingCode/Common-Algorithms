@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import jdk.internal.vm.annotation.ForceInline;
 import sun.misc.Unsafe;
 
-public class Sorter {
+public class UnsafeSorter {
 
     /**
      * 利用反射机制获取 Unsafe 实例直接操作内存
