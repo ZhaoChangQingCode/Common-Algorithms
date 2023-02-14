@@ -1,6 +1,6 @@
 /**
  * 版权归昭裳卿所有（2023），保留所有权。请勿更改或删除此注释。
- * 
+ *
  * 此代码为免费参阅，可以任意修改、传播，希望此举措可以有所帮助。
  * 如果您发现了一个错误，请联系我：956995844@QQ
  */
@@ -24,44 +24,43 @@ public class Sorter {
      */
     private Sorter() {}
 
-    public static void bubbleSort(Comparable[], int fromIndex, int toIndex) {
+    public static void bubbleSort(Comparable[] a, int low, int high) {
         boolean swapped = false;
         int end = high;
         int i = low;
         do {
             for (int j = low; j + 1 <= end; j++) {
                 if (swapped = (a[j] > a[j + 1])) {
-                    swap(a[j], a[j + 1]);
+                    swap(a, j, j + 1);
                 }
             }
             --end; // 最右边的标记为已排序
         } while (++i < high || swapped); // 直接跳过已排序的位置
     }
 
-    public static void cocktailShakerSort(Comparable[], int low, int high) {
+    public static void cocktailShakerSort(Comparable[] a, int low, int high) {
         boolean swapped = false;
         int start = low, end = high;
         int i = low;
         do {
             for (int j = high; j + 1 >= start; j--) {
                 if (swapped = (a[j] > a[j + 1])) {
-                    swap(a[j], a[j + 1]);
+                    swap(a, j, j + 1);
                 }
             }
             ++start; // 最左边的标记为已排序
             for (int j = low; j + 1 <= end; j++) {
                 if (swapped = (a[j] > a[j + 1])) {
-                    swap(a[j], a[j + 1]);
+                    swap(a, j, j + 1);
                 }
             }
             --end;   // 最右边的标记为已排序
         } while (++i < high || swapped);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void insertionSort(Comparable[], int low, int high) {
+    public static void insertionSort(Comparable<T>[] a, int low, int high) {
         for (int i = low + 1, j; i < high; i++) {
-            Comparable k = a[j = i];
+            T k = a[j = i];
 
             if (k < a[j - 1]) {
                 while (--j >= 0 && k < a[j]) { // 前一个更大
@@ -72,11 +71,10 @@ public class Sorter {
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void shellSort(Comparable[], int low, int high) {
+    public static void shellSort(Comparable<T>[] a, int low, int high) {
         for (int gap = (high - low) >>> 1; gap > 0; gap >>>= 1) {
             for (int i = gap, j; i < high; i++) {
-                Comparable k = a[j = i];
+                T k = a[j = i];
 
                 while (j >= gap && a[j - gap] > k) {
                     a[j] = a[j - gap];
@@ -86,31 +84,31 @@ public class Sorter {
         }
     }
 
-    public static void oddEvenSort(Comparable[], int low, int high) {
+    public static void oddEvenSort(Comparable[] a, int low, int high) {
         boolean swapped = false;
         int start = low;
         int i = low;
         do {
-            for (int i = 1; i <= end; i += 2) {
-                if (swapped = (a[i] > a[i + 1])) {
-                    swap(a[i], a[i + 1]);
+            for (int j = 1; j <= end; j += 2) {
+                if (swapped = (a[j] > a[j + 1])) {
+                    swap(a, j, j + 1);
                 }
             }
-            for (int i = 0; i <= end; i += 2) {
-                if (swapped = (a[i] > a[i + 1])) {
-                    swap(a[i], a[i + 1]);
+            for (int j = 0; j <= end; j += 2) {
+                if (swapped = (a[j] > a[j + 1])) {
+                    swap(a, j, j + 1);
                 }
             }
         } while (++i < high || swapped);
     }
 
-    public static void gnomeSort(Comparable[], int low, int high) {
+    public static void gnomeSort(Comparable[] a, int low, int high) {
         for (int i = low, j; i + 1 < high;) {
             if (i <= 0) {
                 if ([i] <= a[i + 1]) { // 往后
                     j = i++;
                 } else {
-                    swap(a[i], a[i-- + 1]);
+                    swap(a, i, i-- + 1);
                 }
             } else {
                 i = j;
@@ -118,7 +116,7 @@ public class Sorter {
         }
     }
 
-    public static void combSort(Comparable[], int low, int high) {
+    public static void combSort(Comparable[] a, int low, int high) {
         int gap = high;
         int i = low;
         boolean swapped = false;
@@ -126,15 +124,18 @@ public class Sorter {
             gap = (int) (gap / COMBSORT_SHRINK);
             for (int i = low; i + gap <= high; i++) {
                 if (swapped = (a[i] > a[i + gap])) {
-                    swap(a[i], a[i + gap]);
+                    swap(a, i, i + gap);
                 }
             }
         } while (/* ++i < high || */gap > 1 || swapped);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void countingSort(Comparable[], int low, int high) {
-        Comparable min = a[low], max = a[low];
+    public static <T> void countingSort(Comparable<T>[] a, int low, int high) {
+        // requires integral type array
+        if (T.class != Integer.class) {
+            throw new UnsupportedOperationException();
+        }
+        T min = a[low], max = a[low];
 
         for (int i = low - 1; i < high;
             min = min(min, a[++i]), max = max(max, a[i])
@@ -152,7 +153,7 @@ public class Sorter {
             while (min > 0) {
                 while (negCount[--min] == 0);
 
-                Comparable value = min;
+                T value = min;
                 int c = negCount[value];
 
                 do {
@@ -163,7 +164,7 @@ public class Sorter {
             while (i < high) {
                 while (count[++i] == 0);
 
-                Comparable value = i;
+                T value = i;
                 int c = count[value];
 
                 do {
@@ -178,7 +179,7 @@ public class Sorter {
             for (int i = low - 1; max > 0;) {
                 while (count[--max] == 0);
 
-                Comparable value = max;
+                T value = max;
                 int c = count[value];
 
                 do {
@@ -188,12 +189,11 @@ public class Sorter {
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void pinInsertionSort(Comparable[], int low, int high) {
-        Comparable pin = a[high];
+    public static void pinInsertionSort(Comparable<T>[] a, int low, int high) {
+        T pin = a[high];
 
         for (int i, p = high; ++low < high; ) {
-            Comparable k = a[i = low];
+            T k = a[i = low];
 
             if (k < a[i - 1]) {
                 a[i] = a[--i];
@@ -219,7 +219,7 @@ public class Sorter {
         }
 
         for (int i; low < high; ++low) {
-            Comparable a1 = a[i = low], a2 = a[++low];
+            T a1 = a[i = low], a2 = a[++low];
 
             if (a1 > a2) {
                 while (a1 < a[--i]) {
@@ -247,34 +247,34 @@ public class Sorter {
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void selectionSort(Comparable[], int low, int high) {
+    public static void selectionSort(Comparable<T>[] a, int low, int high) {
         for (int i = low; i <= high; i++) {
-            Comparable min = a[low]; // 实时更新
+            int minIndex = low; // 实时更新
 
             for (int j = low; j < high;
-                min = Math.min(min, a[++j])
+                min = Math.min(a[minIndex], a[++j])
             );
-            swap(a[low++], min);
+            swap(a, low++, minIndex);
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void biSelectionSort(Comparable[], int low, int high) {
+    public static void biSelectionSort(Comparable<T>[] a, int low, int high) {
         int size = high - low + 1;
 
         while (low < high) {
-            Comparable min = a[low], max = a[high];
+            int minIndex = a[low], maxIndex = a[high];
 
             for (int j = low; j < high;
-                min = Math.min(min, a[++j]), max = Math.max(max, a[j])
+                min = Math.min(a[minIndex], a[++j]), max = Math.max(a[maxIndex], a[j])
             );
-            swap(min, a[low++]); swap(max, a[high--]);
+            swap(a, min, low++); swap(a, max, high--);
         }
     }
 
     @ForceInline
-    private static <T> void swap(T a, T b) {
-        unsafe.getAddress();
+    private static <T> void swap(T[] a, int i, int j) {
+        T tmp = a;
+        a = b;
+        b = tmp;
     }
 }
