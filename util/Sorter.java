@@ -16,6 +16,7 @@ public class Sorter {
     private static Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
 
     static {
+        theUnsafe.setAccessable(true);
         unsafe = theUnsafe.get(null);
     }
 
