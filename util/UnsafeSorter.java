@@ -28,6 +28,9 @@ public class UnsafeSorter {
      */
     private Sorter() {}
 
+    /**
+     * 冒泡排序
+     */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void bubbleSort(Comparable[] a, int low, int high) {
         boolean swapped = false;
@@ -43,6 +46,9 @@ public class UnsafeSorter {
         } while (++i < high || swapped); // 直接跳过已排序的位置
     }
 
+    /**
+     * 鸡尾酒排序
+     */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void cocktailShakerSort(Comparable[] a, int low, int high) {
         boolean swapped = false;
@@ -64,7 +70,10 @@ public class UnsafeSorter {
         } while (++i < high || swapped);
     }
 
-    public static void insertionSort(Comparable<T>[] a, int low, int high) {
+    /**
+     * 插入排序
+     */
+    public static <T> void insertionSort(Comparable<T>[] a, int low, int high) {
         for (int i = low + 1, j; i < high; i++) {
             T k = a[j = i];
 
@@ -77,7 +86,10 @@ public class UnsafeSorter {
         }
     }
 
-    public static void shellSort(Comparable<T>[] a, int low, int high) {
+    /**
+     * 希尔排序
+     */
+    public static <T> void shellSort(Comparable<T>[] a, int low, int high) {
         for (int gap = (high - low) >>> 1; gap > 0; gap >>>= 1) {
             for (int i = gap, j; i < high; i++) {
                 T k = a[j = i];
@@ -90,6 +102,9 @@ public class UnsafeSorter {
         }
     }
 
+    /**
+     * 奇偶排序
+     */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void oddEvenSort(Comparable[] a, int low, int high) {
         boolean swapped = false;
@@ -109,6 +124,9 @@ public class UnsafeSorter {
         } while (++i < high || swapped);
     }
 
+    /**
+     * 地精排序
+     */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void gnomeSort(Comparable[] a, int low, int high) {
         for (int i = low, j; i + 1 < high;) {
@@ -124,6 +142,9 @@ public class UnsafeSorter {
         }
     }
 
+    /**
+     * 梳排序
+     */
     public static void combSort(Comparable[] a, int low, int high) {
         int gap = high;
         int i = low;
@@ -138,6 +159,9 @@ public class UnsafeSorter {
         } while (++i < high || gap > 1 || swapped);
     }
 
+    /**
+     * 计数排序
+     */
     public static <T> void countingSort(Comparable<T>[] a, int low, int high) {
         // requires integral type array
         if (T.class != Integer.class) {
@@ -197,7 +221,10 @@ public class UnsafeSorter {
         }
     }
 
-    public static void pinInsertionSort(Comparable<T>[] a, int low, int high) {
+    /**
+     * PIN 排序
+     */
+    public static <T> void pinInsertionSort(Comparable<T>[] a, int low, int high) {
         T pin = a[high];
 
         for (int i, p = high; ++low < high; ) {
@@ -286,6 +313,9 @@ public class UnsafeSorter {
         if (size & 1 == 1) insertionSort(a, --low, ++high);
     }
 
+    /**
+     * 交换两个地址的值
+     */
     @ForceInline
     private static <T> void swap(T a, T b) {
         T tmp = a;
