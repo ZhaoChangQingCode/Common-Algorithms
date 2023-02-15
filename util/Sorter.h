@@ -59,7 +59,7 @@ template<class T> void cocktailShakerSort(T* a, size_type low, size_type high) {
  */
 template<class T> void insertionSort(T* a, size_type low, size_type high) {
     for (size_type i = low + 1, j; i < high; i++) {
-        T k = a[j = i];
+        T& k = a[j = i];
 
         if (k < a[j - 1]) {
             while (--j >= 0 && k < a[j]) { // 前一个更大
@@ -78,7 +78,7 @@ template<class T> void insertionSort(T* a, size_type low, size_type high) {
 template<class T> void shellSort(T* a, size_type low, size_type high) {
     for (size_type gap = (high - low) >> 1; gap > 0; gap >>= 1) {
         for (size_type i = gap, j; i < high; i++) {
-            T k = a[j = i];
+            T& k = a[j = i];
 
             while (j >= gap && a[j - gap] > k) {
                 a[j] = a[j - gap];
@@ -147,7 +147,7 @@ template<class T> void combSort(T* a, size_type low, size_type high) {
  * 计数排序（索引）
  */
 template<class T> void countingSort(T* a, size_type low, size_type high) {
-    T min = a[low], max = a[low];
+    T & min = a[low], & max = a[low];
 
     for (size_type i = low - 1; i < high;
         min = min(min, a[++i]), max = max(max, a[i])
@@ -262,17 +262,33 @@ template<class T> void pinInsertionSort(T* a, size_type low, size_type high) {
     }
 }
 
+template<class T> T* min(T& a, T& b) {
+    return (a > b) ? 
+}
+
 /**
  * 选择排序
  */
 template<class T> void selectionSort(T* a, int low, int high) {
     for (int i = low; i <= high; i++) {
-        T min = a[low]; // 实时更新
+        T* min = &a[low]; // 实时更新指针
 
         for (size_type j = low; j < high;
-            min = min(min, a[++j])
+            min = (*min < a[++j]) ? min : &a[j];
         );
-        swap(a[low++], min);
+        swap(a[low++], *min);
+    }
+}
+
+@SuppressWarnings({"rawtypes", "unchecked"})
+public static void selectionSort(Comparable[] a, int low, int high) {
+    for (int i = low; i <= high; i++) {
+        int min = low;
+
+        for (int j = low; j < high;
+            min = (a[min] < a[++j]) ? min : j
+        );
+        swap(a[low++], a[min]);
     }
 }
 
@@ -283,12 +299,13 @@ template<class T> void biSelectionSort(T* a, size_type low, size_type high) {
     size_type size = high - low + 1;
 
     while (low < high) {
-        T min = a[low], max = a[high];
+        T * min = &a[low], * max = &a[high];
 
         for (size_type j = low; j < high;
-            min = min(min, a[++j]), max = max(max, a[j])
+            min = (*min < a[++j]) ? min : &a[j],
+            max = (*max > a[j])   ? max : &a[j]
         );
-        swap(min, a[low++]); swap(max, a[high--]);
+        swap(*min, a[low++]); swap(*max, a[high--]);
     }
     if (size & 1 == 1) insertionSort(a, --low, ++high);
 }

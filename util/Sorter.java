@@ -7,10 +7,13 @@
 
 import java.lang.reflect.Field;
 
+import jdk.internal.misc.Unsafe;
 import jdk.internal.vm.annotation.ForceInline;
-import sun.misc.Unsafe;
 
 public class UnsafeSorter {
+
+    private static final Unsafe unsafe = Unsafe.getUnsafe();
+
     /**
      * 阻止实例
      */
@@ -273,43 +276,34 @@ public class UnsafeSorter {
     /**
      * 选择排序
      */
-    public static <T> void selectionSort(Comparable<T>[] a, int low, int high) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static void selectionSort(Comparable[] a, int low, int high) {
         for (int i = low; i <= high; i++) {
-            T min = a[low]; // 实时更新
+            int min = low;
 
             for (int j = low; j < high;
-                min = min(min, a[++j])
+                min = (a[min] < a[++j]) ? min : j
             );
-            swap(a[low++], min);
+            swap(a[low++], a[min]);
         }
     }
 
     /**
      * 双向选择排序
      */
-    public static <T> void biSelectionSort(Comparable<T>[] a, int low, int high) {
+    public static void biSelectionSort(Comparable[] a, int low, int high) {
         int size = high - low + 1;
 
         while (low < high) {
-            T min = a[low], max = a[high];
+            T min = low, max = high;
 
             for (int j = low; j < high;
-                min = min(min, a[++j]), max = max(max, a[j])
+                min = (a[min] < a[++j]) ? min : j,
+                max = (a[max] > a[j])   ? max : j
             );
             swap(min, a[low++]); swap(max, a[high--]);
         }
         if (size & 1 == 1) insertionSort(a, --low, ++high);
-    }
-
-    /**
-     * 利用反射机制获取 Unsafe 实例直接操作内存
-     */
-    private static final Unsafe U;
-    private static Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
-
-    static {
-        theUnsafe.setAcessible(true); // 关掉 JVM 编译器检查
-        U = theUnsafe.get(null);
     }
 
     /**
@@ -318,7 +312,7 @@ public class UnsafeSorter {
     @ForceInline
     private static <T> void swap(T a, T b) {
         T tmp = a;
-        U.putObject(a, b);
-        U.putObject(b, tmp);
+        unsafe.putObject(a, b);
+        unsafe.putObject(b, tmp);
     }
 }
