@@ -15,12 +15,12 @@ public class UnsafeSorter {
     /**
      * 利用反射机制获取 Unsafe 实例直接操作内存
      */
-    private static Unsafe unsafe;
+    private static final Unsafe U;
     private static Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
 
     static {
         theUnsafe.setAcessible(true); // 关掉 JVM 编译器检查
-        unsafe = theUnsafe.get(null);
+        U = theUnsafe.get(null);
     }
 
     /**
@@ -255,10 +255,41 @@ public class UnsafeSorter {
         }
     }
 
+    /**
+     * 选择排序
+     */
+    public static <T> void selectionSort(Comparable<T>[] a, int low, int high) {
+        for (int i = low; i <= high; i++) {
+            T min = a[low]; // 实时更新
+
+            for (int j = low; j < high;
+                min = min(min, a[++j])
+            );
+            swap(a[low++], min);
+        }
+    }
+
+    /**
+     * 双向选择排序
+     */
+    public static <T> void biSelectionSort(Comparable<T>[] a, int low, int high) {
+        int size = high - low + 1;
+
+        while (low < high) {
+            T min = a[low], max = a[high];
+
+            for (int j = low; j < high;
+                min = min(min, a[++j]), max = max(max, a[j])
+            );
+            swap(min, a[low++]); swap(max, a[high--]);
+        }
+        if (size & 1 == 1) insertionSort(a, --low, ++high);
+    }
+
     @ForceInline
     private static <T> void swap(T a, T b) {
         T tmp = a;
-        unsafe.compareAndSwapObject(a, 0, a, b);
-        unsafe.compareAndSwapObject(b, 0, b, tmp);
+        U.putObject(a, b);
+        U.putObject(b, tmp);
     }
 }

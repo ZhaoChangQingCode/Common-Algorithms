@@ -290,4 +290,5 @@ template<class T> void biSelectionSort(T* a, size_type low, size_type high) {
         );
         swap(min, a[low++]); swap(max, a[high--]);
     }
+    if (size & 1 == 1) insertionSort(a, --low, ++high);
 }

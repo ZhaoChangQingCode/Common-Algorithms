@@ -236,34 +236,10 @@ public class Sorter {
         }
     }
 
-    public static void selectionSort(Comparable<T>[] a, int low, int high) {
-        for (int i = low; i <= high; i++) {
-            int minIndex = low; // 实时更新
-
-            for (int j = low; j < high;
-                min = Math.min(a[minIndex], a[++j])
-            );
-            swap(a, low++, minIndex);
-        }
-    }
-
-    public static void biSelectionSort(Comparable<T>[] a, int low, int high) {
-        int size = high - low + 1;
-
-        while (low < high) {
-            int minIndex = a[low], maxIndex = a[high];
-
-            for (int j = low; j < high;
-                min = Math.min(a[minIndex], a[++j]), max = Math.max(a[maxIndex], a[j])
-            );
-            swap(a, minIndex, low++); swap(a, maxIndex, high--);
-        }
-    }
-
     @ForceInline
     private static <T> void swap(T[] a, int i, int j) {
-        T tmp = a;
-        a = b;
-        b = tmp;
+        T tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
     }
 }
