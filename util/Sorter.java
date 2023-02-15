@@ -12,6 +12,9 @@ import jdk.internal.vm.annotation.ForceInline;
 
 public class UnsafeSorter {
 
+    /**
+     * 获取 {@link Unsafe#theUnsafe} 实例获取对内存操作的权限
+     */
     private static final Unsafe unsafe = Unsafe.getUnsafe();
 
     /**
@@ -158,11 +161,12 @@ public class UnsafeSorter {
         if (T.class != Integer.class) {
             throw new UnsupportedOperationException();
         }
-        T min = a[low], max = a[low];
+        int minIndex = low, maxIndex = low;
 
         for (int i = low - 1; i < high;
-            min = min(min, a[++i]), max = max(max, a[i])
+            minIndex = min(a, minIndex, ++i), max = max(a, maxIndex, i)
         );
+        T min = a[minIndex], max = a[maxIndex];
 
         if (min < 0 && max > 0) {
             min = -min;
@@ -279,12 +283,12 @@ public class UnsafeSorter {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void selectionSort(Comparable[] a, int low, int high) {
         for (int i = low; i <= high; i++) {
-            int min = low;
+            int minIndex = low;
 
             for (int j = low; j < high;
-                min = (a[min] < a[++j]) ? min : j
+                minIndex = min(a, minIndex, ++j)
             );
-            swap(a[low++], a[min]);
+            swap(a[low++], a[minIndex]);
         }
     }
 
@@ -292,19 +296,22 @@ public class UnsafeSorter {
      * 双向选择排序
      */
     public static void biSelectionSort(Comparable[] a, int low, int high) {
-        int size = high - low + 1;
-
         while (low < high) {
-            T min = low, max = high;
+            int minIndex = low, maxIndex = high;
 
             for (int j = low; j < high;
-                min = (a[min] < a[++j]) ? min : j,
-                max = (a[max] > a[j])   ? max : j
+                minIndex = min(a, minIndex, ++j), maxIndex = max(a, maxIndex, j)
             );
-            swap(min, a[low++]); swap(max, a[high--]);
+            swap(a[minIndex], a[low++]); swap(a[maxIndex], a[high--]);
         }
-        if (size & 1 == 1) insertionSort(a, --low, ++high);
+        if ((high - low + 1) & 1 == 1) insertionSort(a, --low, ++high);
     }
+
+    @ForceInline
+    private static <T> int max(T[] a, int i, int j) { return (a[i] > a[j]) ? i : j; }
+
+    @ForceInline
+    private static <T> int min(T[] a, int i, int j) { return (a[i] < a[j]) ? i : j; }
 
     /**
      * 交换两个地址的值
@@ -312,7 +319,7 @@ public class UnsafeSorter {
     @ForceInline
     private static <T> void swap(T a, T b) {
         T tmp = a;
-        unsafe.putObject(a, b);
-        unsafe.putObject(b, tmp);
+        unsafe.putReference(a, 0, b);
+        unsafe.putReference(b, 0, tmp);
     }
 }

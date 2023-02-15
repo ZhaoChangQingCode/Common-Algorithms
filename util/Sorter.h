@@ -8,9 +8,9 @@
 
 typedef unsigned int size_type;
 
-using COMBSORT_SHRINK = 1.3F;
-using COMBSORT_THRESHOLD = 64;
-using QUICKSORT_THRESHOLD = 512;
+using COMBSORT_SHRINK     = 1.3F;
+using COMBSORT_THRESHOLD  =   64;
+using QUICKSORT_THRESHOLD =  512;
 
 /**
  * @brief 冒泡排序
@@ -147,7 +147,7 @@ template<class T> void combSort(T* a, size_type low, size_type high) {
  * 计数排序（索引）
  */
 template<class T> void countingSort(T* a, size_type low, size_type high) {
-    T & min = a[low], & max = a[low];
+    T * min = &a[low], * max = &a[low];
 
     for (size_type i = low - 1; i < high;
         min = min(min, a[++i]), max = max(max, a[i])
@@ -274,21 +274,9 @@ template<class T> void selectionSort(T* a, int low, int high) {
         T* min = &a[low]; // 实时更新指针
 
         for (size_type j = low; j < high;
-            min = (*min < a[++j]) ? min : &a[j];
+            min = (*min < a[++j]) ? min : &a[j]
         );
         swap(a[low++], *min);
-    }
-}
-
-@SuppressWarnings({"rawtypes", "unchecked"})
-public static void selectionSort(Comparable[] a, int low, int high) {
-    for (int i = low; i <= high; i++) {
-        int min = low;
-
-        for (int j = low; j < high;
-            min = (a[min] < a[++j]) ? min : j
-        );
-        swap(a[low++], a[min]);
     }
 }
 
