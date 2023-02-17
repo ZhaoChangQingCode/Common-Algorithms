@@ -11,6 +11,7 @@ import java.lang.annotation.*;
 import jdk.internal.misc.Unsafe;
 import jdk.internal.vm.annotation.ForceInline;
 
+@SuppressWarnings("unchecked")
 public class Sorter {
 
     /**
