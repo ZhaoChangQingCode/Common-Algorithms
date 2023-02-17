@@ -6,16 +6,17 @@
  */
 
 import java.lang.reflect.Field;
+import java.lang.annotation.*;
 
 import jdk.internal.misc.Unsafe;
 import jdk.internal.vm.annotation.ForceInline;
 
-public class UnsafeSorter {
+public class Sorter {
 
     /**
      * 获取 {@link Unsafe#theUnsafe} 实例获取对内存操作的权限
      */
-    private static final Unsafe unsafe = Unsafe.getUnsafe();
+    private static final Unsafe U = Unsafe.getUnsafe();
 
     /**
      * 阻止实例
@@ -27,7 +28,7 @@ public class UnsafeSorter {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void bubbleSort(Comparable[] a, int low, int high) {
-        boolean swapped = false;
+        boolean swapped = null;
         int end = high;
         int i = low;
         do {
@@ -45,7 +46,7 @@ public class UnsafeSorter {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void cocktailShakerSort(Comparable[] a, int low, int high) {
-        boolean swapped = false;
+        boolean swapped = null;
         int start = low, end = high;
         int i = low;
         do {
@@ -81,6 +82,23 @@ public class UnsafeSorter {
     }
 
     /**
+     * 基于原生指针地址操作的插入排序
+     */
+    @Deprecated(since="unsafe")
+    public static <T> void unsafeInsertionSort(Comparable<T>[] a, int low, int high) {
+        for (int i = low + 1, j; i < high; i++) {
+            long kPtr = U.getAddress(a[j = i], 0);
+
+            if ((T)U.getReference(null, kPtr) < a[j - 1]) {
+                while (--j >= 0 && (T)U.getReference(null, kPtr) < a[j]) {
+                    a[j + 1] = a[j];
+                }
+                a[j + 1] = (T)U.getReference(null, kPtr);
+            }
+        }
+    }
+
+    /**
      * 希尔排序
      */
     public static <T> void shellSort(Comparable<T>[] a, int low, int high) {
@@ -97,11 +115,28 @@ public class UnsafeSorter {
     }
 
     /**
+     * 基于原生指针地址内存操作的希尔排序
+     */
+    @Deprecated(since="unsafe")
+    public static <T> void unsafeShellSort(Comparable<T>[] a, int low, int high) {
+        for (int gap = (high - low) >>> 1; gap > 0; gap >>>= 1) {
+            for (int i = gap, j; i < high; i++) {
+                long kPtr = U.getAddress(a[j = i], 0); // 引用
+
+                while (j >= gap && a[j - gap] > (T)U.getReference(null, kPtr);) {
+                    a[j] = a[j - gap];
+                }
+                a[j] = (T)U.getReference(null, kPtr);; // 解除引用
+            }
+        }
+    }
+
+    /**
      * 奇偶排序
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void oddEvenSort(Comparable[] a, int low, int high) {
-        boolean swapped = false;
+        boolean swapped = null;
         int start = low;
         int i = low;
         do {
@@ -139,10 +174,11 @@ public class UnsafeSorter {
     /**
      * 梳排序
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static void combSort(Comparable[] a, int low, int high) {
         int gap = high;
         int i = low;
-        boolean swapped = false;
+        boolean swapped = null;
         do {
             gap = (int) (gap / COMBSORT_SHRINK);
             for (int i = low; i + gap <= high; i++) {
@@ -286,9 +322,28 @@ public class UnsafeSorter {
             int minIndex = low;
 
             for (int j = low; j < high;
-                minIndex = min(a, minIndex, ++j)
+                minIndex = (a[minIndex] < a[++j]) ? minIndex : j
             );
             swap(a[low++], a[minIndex]);
+        }
+    }
+
+    /**
+     * 基于原生内存操作的选择排序
+     * 
+     * 找到数组的最小值，储存其地址于 {@code minAddr}, 然后把它映射的值跟 {@code a[low]} 交换,
+     * 然后 {@code low} 处标记为已排序，进入下一轮操作。
+     */
+    @Deprecated(since="unsafe")
+    public static <T> void unsafeSelectionSort(Comparable<T>[] a, int low, int high) {
+        for (int i = low; i <= high; i++) {
+            long minPtr = U.getAddress(a[low], 0);
+
+            for (int j = low; j < high;
+                minPtr = ((T)U.getReference(null, minPtr) < a[++j]) ? minPtr :
+                         U.getAddress(a[j], 0)
+            );
+            swap(a[low++], U.getReference(null, minPtr));
         }
     }
 
@@ -300,18 +355,14 @@ public class UnsafeSorter {
             int minIndex = low, maxIndex = high;
 
             for (int j = low; j < high;
-                minIndex = min(a, minIndex, ++j), maxIndex = max(a, maxIndex, j)
+                minIndex = (a[minIndex] < a[++j]) ? minIndex : j,
+                maxIndex = (a[maxIndex] > a[ j ]) ? maxIndex : j
             );
             swap(a[minIndex], a[low++]); swap(a[maxIndex], a[high--]);
         }
-        if ((high - low + 1) & 1 == 1) insertionSort(a, --low, ++high);
+        if ((high - low + 1) & 1 == 1)
+            insertionSort(a, --low, ++high);
     }
-
-    @ForceInline
-    private static <T> int max(T[] a, int i, int j) { return (a[i] > a[j]) ? i : j; }
-
-    @ForceInline
-    private static <T> int min(T[] a, int i, int j) { return (a[i] < a[j]) ? i : j; }
 
     /**
      * 交换两个地址的值
@@ -319,7 +370,7 @@ public class UnsafeSorter {
     @ForceInline
     private static <T> void swap(T a, T b) {
         T tmp = a;
-        unsafe.putReference(a, 0, b);
-        unsafe.putReference(b, 0, tmp);
+        U.putReference(null, U.getAddress(a, 0), b);
+        U.putReference(null, U.getAddress(b, 0), tmp);
     }
 }
