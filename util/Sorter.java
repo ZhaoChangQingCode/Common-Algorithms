@@ -20,9 +20,9 @@ public class Sorter {
     private static final Unsafe U = Unsafe.getUnsafe();
 
     /**
-     * 阻止实例
+     * 阻止用反射实例化
      */
-    private Sorter() {}
+    private Sorter() {throw new InternalError("Instantiation not allowed.");}
 
     /**
      * 冒泡排序
@@ -33,13 +33,13 @@ public class Sorter {
         int end = high;
         int i = low;
         do {
-            for (int j = low; j + 1 <= end; j++) {
+            for (int j = low; j + 1 <= end; ++j) {
                 if (swapped = (a[j] > a[j + 1])) {
                     swap(a[j], a[j + 1]);
                 }
             }
             --end; // 最右边的标记为已排序
-        } while (++i < high || swapped); // 直接跳过已排序的位置
+        } while (++i < high && swapped); // 直接跳过已排序的位置
     }
 
     /**
@@ -51,26 +51,26 @@ public class Sorter {
         int start = low, end = high;
         int i = low;
         do {
-            for (int j = high; j + 1 >= start; j--) {
+            for (int j = high; j + 1 >= start; --j) {
                 if (swapped = (a[j] > a[j + 1])) {
                     swap(a[j], a[j + 1]);
                 }
             }
             ++start; // 最左边的标记为已排序
-            for (int j = low; j + 1 <= end; j++) {
+            for (int j = low; j + 1 <= end; ++j) {
                 if (swapped = (a[j] > a[j + 1])) {
                     swap(a[j], a[j + 1]);
                 }
             }
             --end;   // 最右边的标记为已排序
-        } while (++i < high || swapped);
+        } while (++i < high && swapped);
     }
 
     /**
      * 插入排序
      */
     public static <T> void insertionSort(Comparable<T>[] a, int low, int high) {
-        for (int i = low + 1, j; i < high; i++) {
+        for (int i = low + 1, j; i < high; ++i) {
             T k = a[j = i];
 
             if (k < a[j - 1]) {
@@ -84,10 +84,13 @@ public class Sorter {
 
     /**
      * 基于原生指针地址操作的插入排序
+     * 
+     * 使用 {@link Unsafe#getAddress(Object, long)} 取地址；
+     * 使用 {@link Unsafe#getReference(Object, long)} 对指针解除引用。
      */
     @Deprecated(since="unsafe")
     public static <T> void unsafeInsertionSort(Comparable<T>[] a, int low, int high) {
-        for (int i = low + 1, j; i < high; i++) {
+        for (int i = low + 1, j; i < high; ++i) {
             long kPtr = U.getAddress(a[j = i], 0);
 
             if ((T)U.getReference(null, kPtr) < a[j - 1]) {
@@ -103,31 +106,14 @@ public class Sorter {
      * 希尔排序
      */
     public static <T> void shellSort(Comparable<T>[] a, int low, int high) {
-        for (int gap = (high - low) >>> 1; gap > 0; gap >>>= 1) {
-            for (int i = gap, j; i < high; i++) {
+        for (int gap = (high + low) >>> 1; gap > 0; gap >>>= 1) {
+            for (int i = low, j; i < high; ++i) {
                 T k = a[j = i];
 
-                while (j >= gap && a[j - gap] > k) {
+                for (; a[j - gap] > k && j >= gap; j -= gap) {
                     a[j] = a[j - gap];
                 }
                 a[j] = k;
-            }
-        }
-    }
-
-    /**
-     * 基于原生指针地址内存操作的希尔排序
-     */
-    @Deprecated(since="unsafe")
-    public static <T> void unsafeShellSort(Comparable<T>[] a, int low, int high) {
-        for (int gap = (high - low) >>> 1; gap > 0; gap >>>= 1) {
-            for (int i = gap, j; i < high; i++) {
-                long kPtr = U.getAddress(a[j = i], 0); // 引用
-
-                while (j >= gap && a[j - gap] > (T)U.getReference(null, kPtr);) {
-                    a[j] = a[j - gap];
-                }
-                a[j] = (T)U.getReference(null, kPtr);; // 解除引用
             }
         }
     }
@@ -141,17 +127,17 @@ public class Sorter {
         int start = low;
         int i = low;
         do {
-            for (int j = 1; j <= end; j += 2) {
+            for (int j = low + 1; j <= end; j += 2) {
                 if (swapped = (a[j] > a[j + 1])) {
                     swap(a[j], a[j + 1]);
                 }
             }
-            for (int j = 0; j <= end; j += 2) {
+            for (int j = low; j <= end; j += 2) {
                 if (swapped = (a[j] > a[j + 1])) {
                     swap(a[j], a[j + 1]);
                 }
             }
-        } while (++i < high || swapped);
+        } while (++i < high && swapped);
     }
 
     /**
@@ -159,15 +145,13 @@ public class Sorter {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void gnomeSort(Comparable[] a, int low, int high) {
-        for (int i = low, j; i + 1 < high;) {
-            if (i <= 0) {
-                if ([i] <= a[i + 1]) { // 往后
-                    j = i++;
-                } else {
-                    swap(a[i], a[i-- + 1]);
+        for (int i = low + 1, j; i < high; ++i) {
+            T k = a[j = i];
+
+            if (a[j - 1] > k) {
+                while (--j >= 0) {
+                    swap(a[j], a[j + 1]);
                 }
-            } else {
-                i = j;
             }
         }
     }
@@ -182,12 +166,12 @@ public class Sorter {
         boolean swapped = null;
         do {
             gap = (int) (gap / COMBSORT_SHRINK);
-            for (int i = low; i + gap <= high; i++) {
+            for (int i = low; i + gap <= high; ++i) {
                 if (swapped = (a[i] > a[i + gap])) {
                     swap(a[i], a[i + gap]);
                 }
             }
-        } while (++i < high || gap > 1 || swapped);
+        } while ((++i < high || gap > 1) && swapped);
     }
 
     /**
@@ -319,7 +303,7 @@ public class Sorter {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void selectionSort(Comparable[] a, int low, int high) {
-        for (int i = low; i <= high; i++) {
+        for (int i = low; i <= high; ++i) {
             int minIndex = low;
 
             for (int j = low; j < high;
@@ -356,13 +340,11 @@ public class Sorter {
             int minIndex = low, maxIndex = high;
 
             for (int j = low; j < high;
-                minIndex = (a[minIndex] < a[++j]) ? minIndex : j,
-                maxIndex = (a[maxIndex] > a[ j ]) ? maxIndex : j
+                minIndex = (a[minIndex] < a[++j]) ? minIndex : j, maxIndex = (a[maxIndex] > a[j]) ? maxIndex : j
             );
             swap(a[minIndex], a[low++]); swap(a[maxIndex], a[high--]);
         }
-        if ((high - low + 1) & 1 == 1)
-            insertionSort(a, --low, ++high);
+        insertionSort(a, --low, ++high);
     }
 
     /**
