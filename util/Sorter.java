@@ -7,6 +7,7 @@
 
 import java.lang.reflect.Field;
 import java.lang.annotation.*;
+import java.util.Random;
 
 import jdk.internal.misc.Unsafe;
 import jdk.internal.vm.annotation.ForceInline;
@@ -21,11 +22,15 @@ public class Sorter {
 
     /**
      * 阻止用反射实例化
+     * 
+     * @throws InternalError
      */
     private Sorter() {throw new InternalError("Instantiation not allowed.");}
 
     /**
      * 冒泡排序
+     * 
+     * @throws ArrayIndexOutOfBoundsException
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void bubbleSort(Comparable[] a, int low, int high) {
@@ -345,6 +350,26 @@ public class Sorter {
             swap(a[minIndex], a[low++]); swap(a[maxIndex], a[high--]);
         }
         insertionSort(a, --low, ++high);
+    }
+
+    /**
+     * 猴子排序
+     */
+    public static void bogoSort(Comparable<T>[], int low, int high) {
+        Random rnd = new Random();
+        int size = high - low;
+
+        while ((a, low, high) -> {
+            boolean sorted = true;
+            for (int i = low - 1; i + 1 <= high && sorted;
+                sorted = (a[++i] < a[i + 1])
+            );
+            return i == size;
+        }) {
+            for (int i = low; i <= high; ++i) {
+                swap(a[i], a[rnd.nextInt(i)]);
+            }
+        }
     }
 
     /**
