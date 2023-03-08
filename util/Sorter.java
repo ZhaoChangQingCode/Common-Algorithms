@@ -1,251 +1,355 @@
+import java.util.Arrays;
+
 /**
- * 版权归昭裳卿所有（2023），保留所有权。请勿更改或删除此注释。
- *
- * 此代码为免费参阅，可以任意修改、传播，希望此举措可以有所帮助。
- * 如果您发现了一个错误，请联系我：956995844@QQ
+ * This class implements fully optimized versions of general sorting
+ * algorithms, including bubble sort, cocktail shaker sort,
+ * odd even sort, comb sort, gnome sort, insertion sort, sorting sort,
+ * selection sort and bi-direct selection sort.
+ * 
+ * @author Wo Xiao
+ * @version 2022.03.04
  */
-
-import java.lang.reflect.Field;
-import java.lang.annotation.*;
-import java.util.Random;
-
-import jdk.internal.misc.Unsafe;
-import jdk.internal.vm.annotation.ForceInline;
-
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class Sorter {
-
     /**
-     * 获取 {@link Unsafe#theUnsafe} 实例获取对内存操作的权限
+     * Gap size of each iteration of comb sort to shrink.
      */
-    private static final Unsafe U = Unsafe.getUnsafe();
+    private static float COMBSORT_SHRINK = 1.3F;
 
     /**
-     * 阻止用反射实例化
+     * Prevents instantiation using reflecting.
+     */
+    private Sorter() {throw new InternalError("Instantiation not permitted");}
+
+    /**
+     * Sorts the specific array using bubble sort.
      * 
-     * @throws InternalError
-     */
-    private Sorter() {throw new InternalError("Instantiation not allowed.");}
-
-    /**
-     * 冒泡排序
+     * The most primitive and ineffient sorting algorithm working
+     * by swapping two elements nearby into the right position
+     * while iterating forward for the size time of the array given
+     * and skips the last element as sorted at each iteration accomplished.
      * 
-     * @throws ArrayIndexOutOfBoundsException
+     * @param a the array to be sorted
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void bubbleSort(Comparable[] a, int low, int high) {
-        boolean swapped = null;
-        int end = high;
-        int i = low;
-        do {
-            for (int j = low; j + 1 <= end; ++j) {
-                if (swapped = (a[j] > a[j + 1])) {
-                    swap(a[j], a[j + 1]);
-                }
-            }
-            --end; // 最右边的标记为已排序
-        } while (++i < high && swapped); // 直接跳过已排序的位置
+    public static void bubbleSort(Comparable[] a) {
+        bubbleSort(a, 0, a.length - 1);
     }
 
     /**
-     * 鸡尾酒排序
+     * Sorts the specific array using comb sort.
+     * 
+     * Comb sort is a subvariant of bubble sort with flexible
+     * and descending iteration gap size.
+     * 
+     * @param a the array to be sorted
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void cocktailShakerSort(Comparable[] a, int low, int high) {
+    public static void combSort(Comparable[] a) {
+        combSort(a, 0, a.length - 1);
+    }
+
+    /**
+     * Sorts the specific array using cocktail shaker sort.
+     * 
+     * Cocktail shaker sort is a subvariant of bubble sort with
+     * bi-direct iteration in turns.
+     * 
+     * @param a the array to be sorted
+     */
+    public static void cocktailShakerSort(Comparable[] a) {
+        cocktailShakerSort(a, 0, a.length - 1);
+    }
+
+    /**
+     * Sorts the specific array using odd-even sort.
+     * 
+     * @param a the array to be sorted
+     */
+    public static void oddEvenSort(Comparable[] a) {
+        oddEvenSort(a, 0, a.length - 1);
+    }
+
+    /**
+     * Sorts the specific array using gnome sort.
+     * 
+     * Gnome sort is the best optimized subvariant of bubble sort with
+     * flexible iteration stategy, which implies 
+     * 
+     * @param a the array to be sorted
+     */
+    public static void gnomeSort(Comparable[] a) {
+        gnomeSort(a, 0, a.length - 1);
+    }
+
+    /**
+     * Sorts the specific array using insertion sort.
+     * 
+     * @param a the array to be sorted
+     */
+    public static void insertionSort(Comparable[] a) {
+        insertionSort(a, 0, a.length - 1);
+    }
+
+    /**
+     * Sorts the specific array using binary sort.
+     * 
+     * Binary sort is an optimized version of insertion sort using
+     * binary searching to locate the right position to insert in
+     * rather than .
+     * 
+     * @param a the array to be sorted
+     */
+    public static <T> void binarySort(Comparable<T>[] a) {
+        binarySort(a, 0, a.length - 1);
+    }
+
+    /**
+     * Sorts the specific array using pin insertion sort.
+     * 
+     * @param a the array to be sorted
+     */
+    public static void pinInsertionSort(Comparable[] a) {
+        pinInsertionSort(a, 0, a.length);
+    }
+
+    /**
+     * Sorts the specific array using shell sort.
+     * 
+     * Shell sort is a subvariant of insetion sort with flexible
+     * iteration gap.
+     * 
+     * @param a the array to be sorted
+     */
+    public static void shellSort(Comparable[] a) {
+        shellSort(a, 0, a.length - 1);
+    }
+
+    /**
+     * Sorts the specific array using selection sort.
+     * 
+     * @param a the array to be sorted
+     */
+    public static void selectionSort(Comparable[] a) {
+        selectionSort(a, 0, a.length - 1);
+    }
+
+    /**
+     * Sorts the specific array using bi-direct selection sort.
+     * 
+     * @param a the array to be sorted
+     */
+    public static void biSelectionSort(Comparable[] a) {
+        int offset = a.length - 1, mid;
+
+        biSelectionSort(a, 0, offset);
+        /**
+         * Invokes insertion sort at the middle parts of array in case of
+         * odd-length array due to the incapacity of bi-direct selection sort.
+         */
+        if (offset & 1 == 0) {
+            insertionSort(a, mid = offset >> 1, mid + 2);
+        }
+    }
+
+    /**
+     * Sorts the specific array using counting sort.
+     * 
+     * @param a the array to be sorted
+     * @param ignoreRepetition indicates whether to ignore repetitive elements
+     * @throws IllegalArgumentException if the input array not integral type
+     */
+    public static void countingSort(Comparable[] a, boolean ignoreRepetition) {
+        try {
+            countingSort(a, 0, a.length - 1, ignoreRepetition);
+        } catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("Integer type supported only");
+        }
+    }
+
+    /**
+     * Sorts the specific range of the array using bubble sort.
+     * 
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
+     */
+    private static void bubbleSort(Comparable[] a, int low, int high) {
         boolean swapped = null;
-        int start = low, end = high;
+        int end = high;
+
         int i = low;
         do {
-            for (int j = high; j + 1 >= start; --j) {
-                if (swapped = (a[j] > a[j + 1])) {
-                    swap(a[j], a[j + 1]);
-                }
-            }
-            ++start; // 最左边的标记为已排序
             for (int j = low; j + 1 <= end; ++j) {
                 if (swapped = (a[j] > a[j + 1])) {
-                    swap(a[j], a[j + 1]);
+                    swap(a, j, j + 1);
                 }
             }
-            --end;   // 最右边的标记为已排序
+            end++; // mark the rightmost element as sorted
+        } while (++i < high && swapped); // skip sorted position
+    }
+
+    /**
+     * Sorts the specific range of the array using cocktail shaker sort.
+     * 
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
+     */
+    private static void cocktailShakerSort(Comparable[] a, int low, int high) {
+        boolean swapped = null;
+        int start = low, end = high;
+
+        int i = low;
+        do {
+            for (int j = high; j - 1 >= start; --j) {
+                if (swapped = (a[j] > a[j - 1])) {
+                    swap(a, j, j - 1);
+                }
+            }
+            start++; // mark the leftmost element as sorted
+            for (int j = low; j + 1 <= end; ++j) {
+                if (swapped = (a[j] > a[j + 1])) {
+                    swap(a, j, j + 1);
+                }
+            }
+            end--;   // mark the rightmost element as sorted
         } while (++i < high && swapped);
     }
 
     /**
-     * 插入排序
+     * Sorts the specific range of the array using insertionSort.
+     * 
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
      */
-    public static <T> void insertionSort(Comparable<T>[] a, int low, int high) {
+    private static <T> void insertionSort(Comparable<T>[] a, int low, int high) {
         for (int i = low + 1, j; i < high; ++i) {
             T k = a[j = i];
 
-            if (k < a[j - 1]) {
-                while (--j >= 0 && k < a[j]) { // 前一个更大
-                    a[j + 1] = a[j]; // 前一个移到当前位置
+            if (a[j - 1] > k) {
+                while (a[--j] > k && j >= 0) { // iterates reversely
+                    a[j + 1] = a[j]; // insert the bigger forward
                 }
-                a[j + 1] = k; // 补上空位
+                a[j + 1] = k; // fill the blank
             }
         }
     }
 
     /**
-     * 基于原生指针地址操作的插入排序
+     * Sorts the specific range of the array using binary insertion sort.
      * 
-     * 使用 {@link Unsafe#getAddress(Object, long)} 取地址；
-     * 使用 {@link Unsafe#getReference(Object, long)} 对指针解除引用。
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
+     * @see {@link java.util.Arrays#binarySearch}
      */
-    @Deprecated(since="unsafe")
-    public static <T> void unsafeInsertionSort(Comparable<T>[] a, int low, int high) {
+    private static <T> void binarySort(Comparable<T>[] a, int low, int high) {
         for (int i = low + 1, j; i < high; ++i) {
-            long kPtr = U.getAddress(a[j = i], 0);
+            T pivot = a[j = i];
+            int j = Arrays.binarySearch(a, pivot);
 
-            if ((T)U.getReference(null, kPtr) < a[j - 1]) {
-                while (--j >= 0 && (T)U.getReference(null, kPtr) < a[j]) {
+            if (j >= 0) {
+                while (j-- >= left) {
                     a[j + 1] = a[j];
                 }
-                a[j + 1] = (T)U.getReference(null, kPtr);
+                a[left] = pivot;
             }
         }
     }
 
     /**
-     * 希尔排序
+     * Sorts the specific range of the array using shell sort
+     * 
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
      */
-    public static <T> void shellSort(Comparable<T>[] a, int low, int high) {
-        for (int gap = (high + low) >>> 1; gap > 0; gap >>>= 1) {
-            for (int i = low, j; i < high; ++i) {
-                T k = a[j = i];
+    private static <T> void shellSort(Comparable<T>[] a, int low, int high) {
+        for (int gap = (high + low) >>> 1, i = gap, j; i < high; ++i, gap /= 2) {
+            T k = a[j = i];
 
-                for (; a[j - gap] > k && j >= gap; j -= gap) {
-                    a[j] = a[j - gap];
-                }
-                a[j] = k;
+            for (; a[j - gap] > k && j >= gap; j -= gap) {
+                a[j] = a[j - gap];
             }
+            a[j] = k;
         }
     }
 
     /**
-     * 奇偶排序
+     * Sorts the specific range of the array using odd-even sort.
+     * 
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void oddEvenSort(Comparable[] a, int low, int high) {
+    private static void oddEvenSort(Comparable[] a, int low, int high) {
         boolean swapped = null;
         int start = low;
+
         int i = low;
         do {
             for (int j = low + 1; j <= end; j += 2) {
                 if (swapped = (a[j] > a[j + 1])) {
-                    swap(a[j], a[j + 1]);
+                    swap(a, j, j + 1);
                 }
             }
             for (int j = low; j <= end; j += 2) {
                 if (swapped = (a[j] > a[j + 1])) {
-                    swap(a[j], a[j + 1]);
+                    swap(a, j, j + 1);
                 }
             }
         } while (++i < high && swapped);
     }
 
     /**
-     * 地精排序
+     * Sorts the specific range of the array using gnome sort.
+     * 
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void gnomeSort(Comparable[] a, int low, int high) {
+    private static void gnomeSort(Comparable[] a, int low, int high) {
         for (int i = low + 1, j; i < high; ++i) {
             T k = a[j = i];
 
             if (a[j - 1] > k) {
                 while (--j >= 0) {
-                    swap(a[j], a[j + 1]);
+                    swap(a, j, j + 1);
                 }
             }
         }
     }
 
     /**
-     * 梳排序
+     * Sorts the specific range of the array using comb sort.
+     * 
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void combSort(Comparable[] a, int low, int high) {
-        int gap = high;
-        int i = low;
+    private static void combSort(Comparable[] a, int low, int high) {
         boolean swapped = null;
+        int gap = high;
+
+        int i = low;
         do {
             gap = (int) (gap / COMBSORT_SHRINK);
             for (int i = low; i + gap <= high; ++i) {
                 if (swapped = (a[i] > a[i + gap])) {
-                    swap(a[i], a[i + gap]);
+                    swap(a, i, i + gap);
                 }
             }
         } while ((++i < high || gap > 1) && swapped);
     }
 
     /**
-     * 计数排序
+     * Sorts the specific range of the array using pin insertion sort.
+     * 
+     * @param a the array to be sorted
+     * @param low the index of first element, inclusive, to be sorted
+     * @param high the index of last element, inclusive, to be sorted
      */
-    public static <T> void countingSort(Comparable<T>[] a, int low, int high) {
-        // requires integral type array
-        if (T.class != Integer.class) {
-            throw new UnsupportedOperationException();
-        }
-        int minIndex = low, maxIndex = low;
-
-        for (int i = low - 1; i < high;
-            minIndex = min(a, minIndex, ++i), max = max(a, maxIndex, i)
-        );
-        T min = a[minIndex], max = a[maxIndex];
-
-        if (min < 0 && max > 0) {
-            min = -min;
-            int negCount[min], count[max];
-
-            for (int p = low - 1; p < high;
-                a[++p] >= 0 ? ++count[a[p]] : ++negCount[-a[p]] // 负数转为正数
-            );
-
-            int i = low - 1;
-            while (min > 0) {
-                while (negCount[--min] == 0);
-
-                T value = min;
-                int c = negCount[value];
-
-                do {
-                    a[++i] = -value;
-                } while (--c > 0);
-            }
-
-            while (i < high) {
-                while (count[++i] == 0);
-
-                T value = i;
-                int c = count[value];
-
-                do {
-                    a[++i] = value;
-                } while (--c > 0);
-            }
-        } else if (max < 0) {
-            int count[max];
-
-            for (int i = low - 1; i < high; ++count[-a[++i]]); // 负数转为正数
-
-            for (int i = low - 1; max > 0;) {
-                while (count[--max] == 0);
-
-                T value = max;
-                int c = count[value];
-
-                do {
-                    a[++i] = -value; // 将正数转为负数
-                } while (--c > 0);
-            }
-        }
-    }
-
-    /**
-     * PIN 排序
-     */
-    public static <T> void pinInsertionSort(Comparable<T>[] a, int low, int high) {
+    private static <T> void pinInsertionSort(Comparable<T>[] a, int low, int high) {
         T pin = a[high];
 
         for (int i, p = high; ++low < high; ) {
@@ -304,81 +408,116 @@ public class Sorter {
     }
 
     /**
-     * 选择排序
+     * Sorts the specific range the array using selection sort.
+     * 
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void selectionSort(Comparable[] a, int low, int high) {
-        for (int i = low; i <= high; ++i) {
+    private static void selectionSort(Comparable[] a, int low, int high) {
+        while (low < high) {
             int minIndex = low;
 
-            for (int j = low; j < high;
-                minIndex = (a[minIndex] < a[++j]) ? minIndex : j
-            );
-            swap(a[low++], a[minIndex]);
+            for (int i = low; i < high; ++i) {
+                minIndex = (a[minIndex] < a[i]) ? minIndex : i;
+            }
+            swap(a, minIndex, low++);
         }
     }
 
     /**
-     * 基于原生内存操作的选择排序
+     * Sorted the specific range of the array using bi-direct selection sort.
      * 
-     * 找到数组的最小值，储存其地址于 {@code minAddr}, 然后把它映射的值跟 {@code a[low]} 交换,
-     * 然后 {@code low} 处标记为已排序，进入下一轮操作。
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
      */
-    @Deprecated(since="unsafe")
-    public static <T> void unsafeSelectionSort(Comparable<T>[] a, int low, int high) {
-        for (int i = low; i <= high; i++) {
-            long minPtr = U.getAddress(a[low], 0);
-
-            for (int j = low; j < high;
-                minPtr = ((T)U.getReference(null, minPtr) < a[++j]) ? minPtr :
-                         U.getAddress(a[j], 0)
-            );
-            swap(a[low++], U.getReference(null, minPtr));
-        }
-    }
-
-    /**
-     * 双向选择排序
-     */
-    public static void biSelectionSort(Comparable[] a, int low, int high) {
+    private static void selectionSort(Comparable[] a, int low, int high) {
         while (low < high) {
-            int minIndex = low, maxIndex = high;
+            int minIndex = low, maxIndex = low;
 
-            for (int j = low; j < high;
-                minIndex = (a[minIndex] < a[++j]) ? minIndex : j, maxIndex = (a[maxIndex] > a[j]) ? maxIndex : j
-            );
-            swap(a[minIndex], a[low++]); swap(a[maxIndex], a[high--]);
+            for (int i = low; i < high; ++i) {
+                minIndex = (a[minIndex] < a[i]) ? minIndex : i;
+                minIndex = (a[maxIndex] < a[i]) ? maxIndex : i;
+            }
+            swap(a, minIndex, low++); swap(a, minIndex, low++);
         }
-        insertionSort(a, --low, ++high);
     }
 
     /**
-     * 猴子排序
+     * Sorts the specific range of the array using counting sort.
+     * 
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
+     * @param flag indicates whether to ignore repetitive elements
      */
-    public static void bogoSort(Comparable<T>[], int low, int high) {
-        Random rnd = new Random();
-        int size = high - low;
+    @Deprecated("building")
+    private static void countingSort(char[] a, int low, int high, boolean flag) {
+        int[] count = new int[high - low];
 
-        while ((a, low, high) -> {
-            boolean sorted = true;
-            for (int i = low - 1; i + 1 <= high && sorted;
-                sorted = (a[++i] < a[i + 1])
-            );
-            return i == size;
-        }) {
-            for (int i = low; i <= high; ++i) {
-                swap(a[i], a[rnd.nextInt(i)]);
+        for (int i = --low; i <= high; ++count[a[++i]]);
+
+        if (flag) {
+            for (int i = low; low <= high; ) {
+                for (int ; ;
+                    a[++low] = (char) i
+                );
+            }
+        } else {
+            for (int i = low; low <= high; ) {
+                while (count[++i] == 0);
+                int c = count[i];
+
+                do {
+                    a[++low] = (char) value;
+                } while (--c > 0);
             }
         }
     }
 
     /**
-     * 交换两个地址的值
+     * Sorts the specific range of the array using counting sort.
+     * 
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
+     * @param flag indicates whether to ignore repetitive elements
      */
-    @ForceInline
-    private static <T> void swap(T a, T b) {
-        T tmp = a;
-        U.putReference(null, U.getAddress(a, 0), b);
-        U.putReference(null, U.getAddress(b, 0), tmp);
+    @Deprecated("building")
+    private static <T> void countingSort(Comparable<T>[] a, int low, int high, boolean flag) {
+        int[] count = new int[high - low];
+
+        for (int i = --low; i <= high; ++count[a[i++] & 0xFFFFFFFF]);
+
+        if (flag) {
+            for (int i = low; i <= high; ) {
+                T value = i & 0xFFFFFFFF;
+
+                for (int i = low; i <= high;
+                    a[++i] = (T) value
+                );
+            }
+        } else {
+            for (int i = low; low < high; ) {
+                while (count[++i] == 0);
+
+                T value = i;
+                int c = count[value];
+
+                do {
+                    a[++low] = (T) i;
+                } while (--c > 0);
+            }
+        }
+    }
+
+    /**
+     * Swaps two elements of the array given.
+     */
+    private final static <T> void swap(T[] a, int i, int j) {
+        T tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
     }
 }
