@@ -93,8 +93,8 @@ public class Sorter {
      * Sorts the specific array using binary sort.
      * 
      * Binary sort is an optimized version of insertion sort using
-     * binary searching to locate the right position to insert in
-     * rather than .
+     * binary searching to locate the right position of current
+     * element to insert in.
      * 
      * @param a the array to be sorted
      */
@@ -154,14 +154,31 @@ public class Sorter {
      * Sorts the specific array using counting sort.
      * 
      * @param a the array to be sorted
-     * @param ignoreRepetition indicates whether to ignore repetitive elements
+     * @param singleCount indicates whether to count each element only once
      * @throws IllegalArgumentException if the input array not integral type
      */
-    public static void countingSort(Comparable[] a, boolean ignoreRepetition) {
+    public static void countingSort(Comparable[] a, boolean singleCount) {
         try {
             countingSort(a, 0, a.length - 1, ignoreRepetition);
-        } catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
-            throw new IllegalArgumentException("Integer type supported only");
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("Integral type supported only");
+        }
+    }
+
+    /**
+     * Sorts the specific array using counting sort.
+     * 
+     * Radix sort is a non-comparative sorting algorithm based on counting
+     * 
+     * @param a the array to be sorted
+     * @param singleCount indicates whether to count each element only once
+     * @throws IllegalArgumentException if the input array not integral type
+     */
+    public static void radixSort(int[] a, boolean singleCount) {
+        try {
+            radixSort(a, 0, a.length - 1, j);
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("Integral type supported only");
         }
     }
 
@@ -244,16 +261,14 @@ public class Sorter {
      * @see {@link java.util.Arrays#binarySearch}
      */
     private static <T> void binarySort(Comparable<T>[] a, int low, int high) {
-        for (int i = low + 1, j; i < high; ++i) {
-            T pivot = a[j = i];
-            int j = Arrays.binarySearch(a, pivot);
+        for (int i = low + 1; i < high; ++i) {
+            T pivot = a[i];
+            int j = Math.abs(Arrays.binarySearch(a, pivot));
 
-            if (j >= 0) {
-                while (j-- >= left) {
-                    a[j + 1] = a[j];
-                }
-                a[left] = pivot;
+            while (j-- >= left) {
+                a[j + 1] = a[j];
             }
+            a[left] = pivot;
         }
     }
 
@@ -438,7 +453,7 @@ public class Sorter {
 
             for (int i = low; i < high; ++i) {
                 minIndex = (a[minIndex] < a[i]) ? minIndex : i;
-                minIndex = (a[maxIndex] < a[i]) ? maxIndex : i;
+                minIndex = (a[maxIndex] > a[i]) ? maxIndex : i;
             }
             swap(a, minIndex, low++); swap(a, minIndex, low++);
         }
@@ -450,11 +465,11 @@ public class Sorter {
      * @param a the array to be sorted
      * @param low the index of the first element, inclusive, to be sorted
      * @param high the index of the last element, inclusive, to be sorted
-     * @param flag indicates whether to ignore repetitive elements
+     * @param flag indicates whether to count each element only once
      */
     @Deprecated("building")
     private static void countingSort(char[] a, int low, int high, boolean flag) {
-        int[] count = new int[high - low];
+        int[] count = new int[high - low + 1];
 
         for (int i = --low; i <= high; ++count[a[++i]]);
 
@@ -482,20 +497,20 @@ public class Sorter {
      * @param a the array to be sorted
      * @param low the index of the first element, inclusive, to be sorted
      * @param high the index of the last element, inclusive, to be sorted
-     * @param flag indicates whether to ignore repetitive elements
+     * @param singleCount indicates whether to count each element only once
      */
     @Deprecated("building")
-    private static <T> void countingSort(Comparable<T>[] a, int low, int high, boolean flag) {
-        int[] count = new int[high - low];
+    private static void countingSort(int[] a, int low, int high, boolean singleCount) {
+        int[] count = new int[high - low + 1];
 
         for (int i = --low; i <= high; ++count[a[i++] & 0xFFFFFFFF]);
 
-        if (flag) {
-            for (int i = low; i <= high; ) {
+        if (singleCount) {
+            for (int i = low; low < high; ) {
                 T value = i & 0xFFFFFFFF;
 
-                for (int i = low; i <= high;
-                    a[++i] = (T) value
+                for (low = high - count[value]; low < high;
+                    a[--high] = value
                 );
             }
         } else {
@@ -506,8 +521,69 @@ public class Sorter {
                 int c = count[value];
 
                 do {
-                    a[++low] = (T) i;
+                    a[++low] = i;
                 } while (--c > 0);
+            }
+        }
+    }
+
+    /**
+     * Sorts the specific range of the array using radix sort.
+     * 
+     * @param a the array to be sorted
+     * @param low the index of the first element, inclusive, to be sorted
+     * @param high the index of the last element, inclusive, to be sorted
+     * @param singleCount indicates whether to count each element only once
+     */
+    private static void radixSort(int[] a, int low, int high, boolean singleCount) {
+        int[][] count = new int[10][Integer.MAX_VALUE];
+
+        /**
+         * Pointers to extreme values.
+         */
+        int maxIndex = low;
+        int minIndex = low;
+
+        /**
+         * Compute maxinum and mininum value of the array.
+         */
+        for (int i = low--; i <= high;
+            maxIndex = (a[maxIndex] > a[++i]) ? maxIndex : i,
+            minIndex = (a[minIndex] < a[i])   ? minIndex : i
+        );
+
+        int min = a[minIndex];
+        int max = a[maxIndex];
+
+        for (int exp = 1; max / exp > 0; exp *= 10) {
+            /**
+             * Compute a histogram with the number of each values
+             * by digit position.
+             */
+            for (int i = low - 1; i <= high; ++count[(a[++i] / exp) % 10][a[i]]);
+
+            if (singleCount) {
+                for (int i = 0; i <= 9; ++i) {
+                    for (int j = min; i <= Integer.MAX_VALUE; ) {
+                        while (count[i][++j] == 0); // skip zero ocurrences
+
+                        int value = j;
+                        a[++low] = value;
+                    }
+                }
+            } else {
+                for (int i = 0; i <= 9; ++i) {
+                    for (int j = min; low < high; ) {
+                        while (count[i][++j] == 0);
+
+                        int value = j;
+                        int c = count[i][value];
+
+                        do {
+                            a[++low] = value;
+                        } while (--c > 0);
+                    }
+                }
             }
         }
     }
